@@ -1,0 +1,21 @@
+/**
+ * css styles
+ */
+div#saved-games {
+  overflow-y: scroll;
+  height: 360px;
+}
+
+div#saved-games ul li {
+  list-style-type : none;
+}
+
+div#saved-games ul li a {
+  color : lightBlue;
+  font-weight : bold;
+  text-decoration: underline;
+}
+
+div#saved-games ul li a:hover {
+  cursor: pointer;
+}

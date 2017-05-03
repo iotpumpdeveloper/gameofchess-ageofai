@@ -1,0 +1,7 @@
+<div id="saved-games">
+    <ul>
+        <li v-for='entry in saved_game_list'>
+            <a @click.prevent ="loadGameIntoBoard(entry)">{{ entry }}</a>
+        </li>
+    </ul>
+</div>

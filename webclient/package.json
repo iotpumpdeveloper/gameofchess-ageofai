@@ -1,0 +1,43 @@
+{
+  "name": "gameofchess-ageofai",
+  "description": "An AI based chess game",
+  "version": "1.0.0",
+  "author": "jim huang <iotpump.developer@gmail.com>",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot --host 127.0.0.1 --port 8080",
+    "demo": "cross-env NODE_ENV=development webpack-dev-server --progress --host 127.0.0.1 --port 8080",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "chessboardjs": "0.0.1",
+    "jquery": "^3.2.1",
+    "sha1": "^1.1.1",
+    "vue": "^2.2.1",
+    "vue-resource": "^1.3.1",
+    "vue2-flexible-modal": "0.0.1",
+    "vuex": "^2.2.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2016": "^6.22.0",
+    "babel-preset-latest": "^6.0.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-preset-stage-3": "^6.22.0",
+    "cross-env": "^3.2.4",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.3",
+    "node-sass": "^4.5.0",
+    "sass-loader": "^5.0.1",
+    "vue-loader": "^11.1.4",
+    "vue-style-loader": "^3.0.1",
+    "vue-template-compiler": "^2.2.1",
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "^2.4.2"
+  }
+}
