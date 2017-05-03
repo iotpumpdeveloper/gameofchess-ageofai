@@ -17,6 +17,8 @@ export default {
     var gameStatus;
 
     var updateStatus = (result) => {
+      gameStatus = result;
+      
       // has the game ended?
       if ( result.moves.length == 0) {
         var winningColor = 'Black'; 
@@ -50,15 +52,13 @@ export default {
 
     // do not pick up pieces if the game is over
     var onDragStart = (source, piece, position, orientation) => {
-      var possibleMoves = this.$gameservice.getPossibleMoves();
-      if (possibleMoves.length === 0) {
+      if (gameStatus.moves.length === 0) {
         return false;
       }
     };
 
     var makeAIMove = () => {
       var result = this.$gameservice.doAIMove();
-      gameStatus = result;
       //play some nice audios
       var audio = new Audio('/audios/horse.ogg');
       audio.play();
@@ -68,7 +68,6 @@ export default {
 
     var onDrop = (source, target, piece, newPos, oldPos, orientation) => { 
       var result = this.$gameservice.doPlayerMove(source, target);
-      gameStatus = result;
 
       // illegal move
       if (! result.is_valid_move) return 'snapback';
@@ -91,7 +90,8 @@ export default {
     var waitForChessBoard = () => {
       if ($('#chessboard').length) {
         var result = this.$gameservice.createNewGame(gameOptions);
-        
+        gameStatus = result; 
+
         this.game_id = result.game_id;
 
         computerMoveInterval = 400;
@@ -118,6 +118,7 @@ export default {
     }
 
     this.$eventbus.$on('load_saved_game', (result) => {
+      gameStatus = result;
       board.position(result.fen);
       board.orientation(result.playerColor);
     });

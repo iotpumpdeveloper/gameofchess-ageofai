@@ -112,9 +112,4 @@ export default class
       is_valid_move : (move != null)
     };
   }
-
-  static getPossibleMoves() 
-  {
-    return this.game.moves();
-  }
 }
