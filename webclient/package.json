@@ -1,6 +1,6 @@
 {
   "name": "gameofchess-ageofai",
-  "description": "An AI based chess game",
+  "description": "Game of Chess: Age of AI, An AI based chess game",
   "version": "1.0.0",
   "author": "jim huang <iotpump.developer@gmail.com>",
   "private": true,

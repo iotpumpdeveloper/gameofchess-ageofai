@@ -1,4 +1,4 @@
-Game of Chess --- Age of AI
+Game of Chess : Age of AI
 ============================
 An AI based chess game
 
