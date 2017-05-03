@@ -49,7 +49,6 @@ export default {
     };
 
     // do not pick up pieces if the game is over
-    // only pick up pieces for White
     var onDragStart = (source, piece, position, orientation) => {
       var possibleMoves = this.$gameservice.getPossibleMoves();
       if (possibleMoves.length === 0) {
@@ -91,7 +90,9 @@ export default {
 
     var waitForChessBoard = () => {
       if ($('#chessboard').length) {
-        this.game_id = this.$gameservice.createNewGame(gameOptions);
+        var result = this.$gameservice.createNewGame(gameOptions);
+        
+        this.game_id = result.game_id;
 
         computerMoveInterval = 400;
 

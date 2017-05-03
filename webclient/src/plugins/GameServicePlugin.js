@@ -29,7 +29,16 @@ export default class
     Storage.setItem('current_game_data', gameData);
     this.game = new Chess();
     SimpleChessAI.setAIColor(gameOptions.player_color == "white"? "black" : "white");
-    return gameId;
+
+    var result = {
+      game_id : gameId,
+      moves : this.game.moves(),
+      pgn : '',
+      fen : '',
+      player_color : gameOptions.player_color
+    }
+
+    return result;
   }
 
   static saveCurrentGame()
@@ -56,8 +65,15 @@ export default class
     Storage.setItem('current_game_data', savedGameData[gameId]);
     SimpleChessAI.setAIColor(savedGameData[gameId].playerColor == "white"? "black" : "white");
     this.game.load_pgn(savedGameData[gameId].pgn);
-    var result = savedGameData[gameId];
-    result.fen = this.game.fen();
+    
+    var result = {
+      game_id : gameId,
+      moves : this.game.moves(),
+      pgn : savedGameData[gameId].pgn,
+      fen : this.game.fen(),
+      player_color : savedGameData[gameId].playerColor
+    }
+
     return result;
   }
 
