@@ -48,7 +48,7 @@ class PublishingServer extends WebSocketServer
 
         i++;
       }
-    }, 1000);
+    }, 50);
   }
 
   broadcastMove(move) 
@@ -85,7 +85,7 @@ class PublishingServer extends WebSocketServer
         }
       }
       this.broadcastors = broadcastors;
-      setTimeout(initBroadcastors, 5000);
+      setTimeout(initBroadcastors, 3000);
     };
 
     initBroadcastors();
