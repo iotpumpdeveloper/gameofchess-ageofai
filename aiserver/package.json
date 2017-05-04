@@ -1,0 +1,17 @@
+{
+  "name": "ai_chess_server",
+  "version": "1.0.0",
+  "description": "A websocket based chess AI server",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.0",
+    "shortid": "^2.2.8",
+    "ws": "^2.2.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "request": "^2.81.0"
+  }
+}
