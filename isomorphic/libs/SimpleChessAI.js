@@ -2,7 +2,17 @@
  * modified from : 
  * https://medium.freecodecamp.com/simple-chess-ai-step-by-step-1d55a9266977
  */
-const Chess = require('./chess.js');
+var c = require('./chess.js');
+
+/**
+ * since this is an isomorphic library, need to deal with backend and frontend difference on requiring
+ */
+var Chess;
+if (typeof c.Chess === 'function') {
+  Chess = c.Chess;
+} else if (typeof c === 'function') {
+  Chess = c;
+}
 
 var colorMap = {
   'black' : 'b',
@@ -28,119 +38,119 @@ var getAIColor = function() {
 
 var minimaxRoot =function(depth, game, isMaximisingPlayer) {
 
-    var minimaxFunctionMap = {
-      3 : minimax3,
-      2 : minimax2,
-      1 : minimax1,
-      0 : minimax0
-    }
+  var minimaxFunctionMap = {
+    3 : minimax3,
+    2 : minimax2,
+    1 : minimax1,
+    0 : minimax0
+  }
 
-    var newGameMoves = game.ugly_moves();
-    var bestMove = -9999;
-    var bestMoveFound;
+  var newGameMoves = game.ugly_moves();
+  var bestMove = -9999;
+  var bestMoveFound;
 
-    for(var i = 0; i < newGameMoves.length; i++) {
-        var newGameMove = newGameMoves[i]
-        game.ugly_move(newGameMove);
-        var value = minimaxFunctionMap[depth - 1](game, -10000, 10000, !isMaximisingPlayer);
-        game.undo();
-        if(value >= bestMove) {
-            bestMove = value;
-            bestMoveFound = newGameMove;
-        }
+  for(var i = 0; i < newGameMoves.length; i++) {
+    var newGameMove = newGameMoves[i]
+    game.ugly_move(newGameMove);
+    var value = minimaxFunctionMap[depth - 1](game, -10000, 10000, !isMaximisingPlayer);
+    game.undo();
+    if(value >= bestMove) {
+      bestMove = value;
+      bestMoveFound = newGameMove;
     }
-    return bestMoveFound;
+  }
+  return bestMoveFound;
 };
 
 var minimax3 = function (game, alpha, beta, isMaximisingPlayer) {
-    var newGameMoves = game.ugly_moves();
+  var newGameMoves = game.ugly_moves();
 
-    if (isMaximisingPlayer) {
-        var bestMove = -9999;
-        for (var i = 0; i < newGameMoves.length; i++) {
-            game.ugly_move(newGameMoves[i]);
-            bestMove = Math.max(bestMove, minimax2(game, alpha, beta, !isMaximisingPlayer));
-            game.undo();
-            alpha = Math.max(alpha, bestMove);
-            if (beta <= alpha) {
-                return bestMove;
-            }
-        }
+  if (isMaximisingPlayer) {
+    var bestMove = -9999;
+    for (var i = 0; i < newGameMoves.length; i++) {
+      game.ugly_move(newGameMoves[i]);
+      bestMove = Math.max(bestMove, minimax2(game, alpha, beta, !isMaximisingPlayer));
+      game.undo();
+      alpha = Math.max(alpha, bestMove);
+      if (beta <= alpha) {
         return bestMove;
-    } else {
-        var bestMove = 9999;
-        for (var i = 0; i < newGameMoves.length; i++) {
-            game.ugly_move(newGameMoves[i]);
-            bestMove = Math.min(bestMove, minimax2(game, alpha, beta, !isMaximisingPlayer));
-            game.undo();
-            beta = Math.min(beta, bestMove);
-            if (beta <= alpha) {
-                return bestMove;
-            }
-        }
-        return bestMove;
+      }
     }
+    return bestMove;
+  } else {
+    var bestMove = 9999;
+    for (var i = 0; i < newGameMoves.length; i++) {
+      game.ugly_move(newGameMoves[i]);
+      bestMove = Math.min(bestMove, minimax2(game, alpha, beta, !isMaximisingPlayer));
+      game.undo();
+      beta = Math.min(beta, bestMove);
+      if (beta <= alpha) {
+        return bestMove;
+      }
+    }
+    return bestMove;
+  }
 };
 
 var minimax2 = function (game, alpha, beta, isMaximisingPlayer) {
-    var newGameMoves = game.ugly_moves();
+  var newGameMoves = game.ugly_moves();
 
-    if (isMaximisingPlayer) {
-        var bestMove = -9999;
-        for (var i = 0; i < newGameMoves.length; i++) {
-            game.ugly_move(newGameMoves[i]);
-            bestMove = Math.max(bestMove, minimax1(game, alpha, beta, !isMaximisingPlayer));
-            game.undo();
-            alpha = Math.max(alpha, bestMove);
-            if (beta <= alpha) {
-                return bestMove;
-            }
-        }
+  if (isMaximisingPlayer) {
+    var bestMove = -9999;
+    for (var i = 0; i < newGameMoves.length; i++) {
+      game.ugly_move(newGameMoves[i]);
+      bestMove = Math.max(bestMove, minimax1(game, alpha, beta, !isMaximisingPlayer));
+      game.undo();
+      alpha = Math.max(alpha, bestMove);
+      if (beta <= alpha) {
         return bestMove;
-    } else {
-        var bestMove = 9999;
-        for (var i = 0; i < newGameMoves.length; i++) {
-            game.ugly_move(newGameMoves[i]);
-            bestMove = Math.min(bestMove, minimax1(game, alpha, beta, !isMaximisingPlayer));
-            game.undo();
-            beta = Math.min(beta, bestMove);
-            if (beta <= alpha) {
-                return bestMove;
-            }
-        }
-        return bestMove;
+      }
     }
+    return bestMove;
+  } else {
+    var bestMove = 9999;
+    for (var i = 0; i < newGameMoves.length; i++) {
+      game.ugly_move(newGameMoves[i]);
+      bestMove = Math.min(bestMove, minimax1(game, alpha, beta, !isMaximisingPlayer));
+      game.undo();
+      beta = Math.min(beta, bestMove);
+      if (beta <= alpha) {
+        return bestMove;
+      }
+    }
+    return bestMove;
+  }
 };
 
 
 var minimax1 = function (game, alpha, beta, isMaximisingPlayer) {
-    var newGameMoves = game.ugly_moves();
+  var newGameMoves = game.ugly_moves();
 
-    if (isMaximisingPlayer) {
-        var bestMove = -9999;
-        for (var i = 0; i < newGameMoves.length; i++) {
-            game.ugly_move(newGameMoves[i]);
-            bestMove = Math.max(bestMove, minimax0(game, alpha, beta, !isMaximisingPlayer));
-            game.undo();
-            alpha = Math.max(alpha, bestMove);
-            if (beta <= alpha) {
-                return bestMove;
-            }
-        }
+  if (isMaximisingPlayer) {
+    var bestMove = -9999;
+    for (var i = 0; i < newGameMoves.length; i++) {
+      game.ugly_move(newGameMoves[i]);
+      bestMove = Math.max(bestMove, minimax0(game, alpha, beta, !isMaximisingPlayer));
+      game.undo();
+      alpha = Math.max(alpha, bestMove);
+      if (beta <= alpha) {
         return bestMove;
-    } else {
-        var bestMove = 9999;
-        for (var i = 0; i < newGameMoves.length; i++) {
-            game.ugly_move(newGameMoves[i]);
-            bestMove = Math.min(bestMove, minimax0(game, alpha, beta, !isMaximisingPlayer));
-            game.undo();
-            beta = Math.min(beta, bestMove);
-            if (beta <= alpha) {
-                return bestMove;
-            }
-        }
-        return bestMove;
+      }
     }
+    return bestMove;
+  } else {
+    var bestMove = 9999;
+    for (var i = 0; i < newGameMoves.length; i++) {
+      game.ugly_move(newGameMoves[i]);
+      bestMove = Math.min(bestMove, minimax0(game, alpha, beta, !isMaximisingPlayer));
+      game.undo();
+      beta = Math.min(beta, bestMove);
+      if (beta <= alpha) {
+        return bestMove;
+      }
+    }
+    return bestMove;
+  }
 };
 
 
@@ -270,6 +280,6 @@ var getNextBestMove = function(fen) {
   return minimaxRoot(3, game, true);
 }
 
-export default {
+module.exports = {
   getNextBestMove
 }

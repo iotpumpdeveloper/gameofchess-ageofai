@@ -28,7 +28,6 @@ export default class
     }
     Storage.setItem('current_game_data', gameData);
     this.game = new Chess();
-    //SimpleChessAI.setAIColor(gameOptions.player_color == "white"? "black" : "white");
 
     var result = {
       game_id : gameId,

@@ -1,5 +1,5 @@
-var Chess = require('./libs/chess.js').Chess;
-var SimpleAI = require('./libs/SimpleAI.js'); 
+var Chess = require(__dirname + '/../isomorphic/libs/chess.js').Chess;
+var SimpleChessAI = require(__dirname + '/../isomorphic/libs/SimpleChessAI.js'); 
 
 var SQUARES = {
   a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
@@ -28,7 +28,7 @@ for (var i = 0; i <= 200; i++) {
     break;
   }
 
-  var move = SimpleAI.getNextBestMove(game.fen());
+  var move = SimpleChessAI.getNextBestMove(game.fen());
   move.fromSquare = SQUARES_MAP[move.from];
   move.toSquare = SQUARES_MAP[move.to];
   game.ugly_move(move);
