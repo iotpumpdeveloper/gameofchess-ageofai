@@ -1,7 +1,7 @@
 {
-  "name": "ai_chess_server",
+  "name": "gameofchess-ageofai-aiserver",
   "version": "1.0.0",
-  "description": "A websocket based chess AI server",
+  "description": "Game of Chess: Age of AI, An AI based chess game",
   "keywords": [],
   "author": "",
   "license": "ISC",

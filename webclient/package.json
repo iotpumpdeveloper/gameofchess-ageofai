@@ -1,6 +1,6 @@
 {
-  "name": "gameofchess-ageofai",
-  "description": "Game of Chess: Age of AI, An AI based chess game",
+  "name": "gameofchess-ageofai-webclient",
+  "description": "Web Client for Game of Chess: Age of AI, An AI based chess game",
   "version": "1.0.0",
   "author": "jim huang <iotpump.developer@gmail.com>",
   "private": true,
@@ -38,6 +38,8 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.2.1",
     "webpack": "^2.2.0",
-    "webpack-dev-server": "^2.4.2"
+    "webpack-dev-server": "^2.4.2",
+    "chai": "^3.5.0",
+    "request": "^2.81.0"
   }
 }
