@@ -2,6 +2,7 @@
  * modified from : 
  * https://medium.freecodecamp.com/simple-chess-ai-step-by-step-1d55a9266977
  */
+const Chess = require('./chess.js');
 
 var colorMap = {
   'black' : 'b',
@@ -10,6 +11,8 @@ var colorMap = {
   'w' : 'w'
 }
 var aiColor = 'b'; //default ai is on black
+
+var game = new Chess(); //initiate the game once
 
 var setAIColor = function(color) {
   aiColor = colorMap[color]; 
@@ -261,13 +264,12 @@ var getPieceValue = function (piece, x, y) {
   return piece.color === aiColor ? -absoluteValue : absoluteValue;
 };
 
-var getNextBestMove = function(game) {
-  setAIColor(aiColor);
+var getNextBestMove = function(fen) {
+  game.load(fen);
+  setAIColor(game.turn());
   return minimaxRoot(3, game, true);
 }
 
 export default {
-  setAIColor,
-  getAIColor, 
   getNextBestMove
 }

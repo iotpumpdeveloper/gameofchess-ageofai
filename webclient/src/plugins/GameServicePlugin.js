@@ -24,17 +24,17 @@ export default class
     var gameData = {
       gameId : gameId,
       playerColor : gameOptions.player_color,
-      pgn : ''
+      pgn : '',
     }
     Storage.setItem('current_game_data', gameData);
     this.game = new Chess();
-    SimpleChessAI.setAIColor(gameOptions.player_color == "white"? "black" : "white");
+    //SimpleChessAI.setAIColor(gameOptions.player_color == "white"? "black" : "white");
 
     var result = {
       game_id : gameId,
       moves : this.game.moves(),
-      pgn : '',
-      fen : '',
+      pgn : this.game.pgn(),
+      fen : this.game.fen(),
       player_color : gameOptions.player_color
     }
 
@@ -63,7 +63,6 @@ export default class
   static loadGame(gameId) {
     var savedGameData = Storage.getItem('saved_game_data');
     Storage.setItem('current_game_data', savedGameData[gameId]);
-    SimpleChessAI.setAIColor(savedGameData[gameId].playerColor == "white"? "black" : "white");
     this.game.load_pgn(savedGameData[gameId].pgn);
     
     var result = {
@@ -84,7 +83,7 @@ export default class
   }
 
   static doAIMove() {
-    var move = SimpleChessAI.getNextBestMove(this.game);
+    var move = SimpleChessAI.getNextBestMove(this.game.fen()); //we just get the next best move based on the current fen string
     this.game.ugly_move(move);  
     return {
       fen : this.game.fen(),

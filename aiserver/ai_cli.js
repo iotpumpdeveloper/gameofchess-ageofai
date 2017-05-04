@@ -28,12 +28,7 @@ for (var i = 0; i <= 200; i++) {
     break;
   }
 
-  if (i % 2 == 0) {
-    SimpleAI.setAIColor('white');
-  } else {
-    SimpleAI.setAIColor('black');
-  }
-  var move = SimpleAI.getNextBestMove(game);
+  var move = SimpleAI.getNextBestMove(game.fen());
   move.fromSquare = SQUARES_MAP[move.from];
   move.toSquare = SQUARES_MAP[move.to];
   game.ugly_move(move);

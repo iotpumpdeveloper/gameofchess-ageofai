@@ -120,7 +120,7 @@ export default {
     this.$eventbus.$on('load_saved_game', (result) => {
       gameStatus = result;
       board.position(result.fen);
-      board.orientation(result.playerColor);
+      board.orientation(result.player_color);
     });
 
     this.$eventbus.$on('new_game_started', (_gameOptions) => {
