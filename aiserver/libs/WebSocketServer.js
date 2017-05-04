@@ -23,6 +23,7 @@ class WebSocketServer
   addPath(path, options)
   {
     this.paths[path] = new Path(path, options);
+    return this.paths[path];
   }
 
   getPath(path)
