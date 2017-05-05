@@ -29,9 +29,10 @@ export default class WebSocketFactoryPlugin
             this._wsMap[path]._ws.send(this._wsMap[path]._message);
           }
 
-          this._wsMap[path].sendMessage = (message, _messageHandler) => {
+          this._wsMap[path].sendMessage = (message, _messageHandler, _errorHandler) => {
             this._wsMap[path]._message = message;
             this._wsMap[path]._ws.onmessage = _messageHandler;
+            this._wsMap[path]._ws.onerror = _errorHandler;
             if (this._wsMap[path]._ws.readyState == 1) {
               this._wsMap[path]._ws.send(this._wsMap[path]._message);
             }

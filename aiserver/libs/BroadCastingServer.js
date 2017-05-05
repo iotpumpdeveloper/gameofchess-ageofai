@@ -26,7 +26,6 @@ class BroadCastingServer extends WebSocketServer
       .addPath('/ai/move/get')
       .getDefaultChannel()
       .onMessage = (message, client) => {
-        console.log(message);
         client.send(message);
         client.close();
       }

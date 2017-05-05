@@ -86,6 +86,8 @@ export default class
   static doAIMove() {
     this.$wsFactory.get('/aimoveget').sendMessage(this.game.fen(), (response) => {
       console.log(response.data);
+    }, (error) => {
+      console.log(error);
     }); 
 
     var move = SimpleChessAI.getNextBestMove(this.game.fen()); //we just get the next best move based on the current fen string
