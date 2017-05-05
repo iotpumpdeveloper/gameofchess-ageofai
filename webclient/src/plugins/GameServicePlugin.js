@@ -1,5 +1,6 @@
 /**
- * This is a centralize service component, depends on the EventBusPlugin
+ * This is a centralize service component, depends on 
+ * EventBusPlugin, WebSocketFactoryPlugin
  */
 import sha1 from 'sha1';
 import Storage from '../libs/Storage.js';
@@ -12,6 +13,7 @@ export default class
     Vue.prototype.$gameservice = this;
 
     this.$eventbus = Vue.prototype.$eventbus;
+    this.$wsFactory = Vue.prototype.$wsFactory;
 
     this.$eventbus.$on('game_pgn_update', (pgn) => {
       var currentGameData = Storage.getItem('current_game_data');
@@ -82,6 +84,10 @@ export default class
   }
 
   static doAIMove() {
+    this.$wsFactory.get('/aimoveget').sendMessage(this.game.fen(), (response) => {
+      console.log(response.data);
+    }); 
+
     var move = SimpleChessAI.getNextBestMove(this.game.fen()); //we just get the next best move based on the current fen string
     this.game.ugly_move(move);  
     return {

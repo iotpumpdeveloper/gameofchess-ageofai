@@ -22,21 +22,14 @@ class BroadCastingServer extends WebSocketServer
   {
     super.start(); //start the web server
 
-    /*//add livenews path*/
-    /*this.addPath('/livenews');*/
-    /*var liveNewsPath = this.getPath('/livenews');*/
-
-    /*for (var i in this.config.newsSource.sources){*/
-    /*liveNewsPath.addChannel(this.config.newsSource.sources[i]); */
-    /*}*/
-
-    /*liveNewsPath.getDefaultChannel().onMessage = (message, client) => {*/
-    /*if (liveNewsPath.getChannel(message) != undefined) {*/
-    /*client.switchToChannel(message);*/
-    /*} else { */
-    /*client.close();*/
-    /*}*/
-    /*}*/
+    this
+      .addPath('/ai/move/get')
+      .getDefaultChannel()
+      .onMessage = (message, client) => {
+        console.log(message);
+        client.send(message);
+        client.close();
+      }
 
     //add internal data path
     var idpName = InternalDataPathName.onServer(this.serverName); 
@@ -44,10 +37,9 @@ class BroadCastingServer extends WebSocketServer
       .addPath(idpName)
       .getDefaultChannel()
       .onMessage = (message) => { //now there is incoming message on idp of this server
-      var messageObj = JSON.parse(message);
-      console.log(messageObj);
-      //liveNewsPath.getChannel(messageObj.source).broadcast(JSON.stringify(messageObj.data));
-    }
+        var messageObj = JSON.parse(message);
+        console.log(messageObj);
+      }
 
   }
 }

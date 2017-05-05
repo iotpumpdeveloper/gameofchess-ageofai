@@ -43,6 +43,7 @@ class WebSocketServer
     });
 
     this._serverInstance.on('connection', (client) => {
+      console.log(client);
       var path = client.upgradeReq.url;
       if (path in this.paths && client.readyState == client.OPEN) {
         this.paths[path].addConnectedClient(WebSocketClient.bindToWebSocket(client));
