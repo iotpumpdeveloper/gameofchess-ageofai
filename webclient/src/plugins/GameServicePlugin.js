@@ -99,11 +99,19 @@ export default class
 
   static doAIMove(resultHandler) {
     this.$wsFactory.get('/aimoveget').sendMessage(this.game.fen(), (response) => {
+      console.log('received data from ai server');
       resultHandler(this._doInBrowserAIMove());
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error);
       resultHandler(this._doInBrowserAIMove());
     }); 
+
+    if ( this.$wsFactory.get('/aimoveget').isClosed() ) { 
+      //if the websocket connection is completely closed, 
+      //fall back to in-browser ai
+      console.log('connection to ai server is closed');
+      resultHandler(this._doInBrowserAIMove());
+    }
   }
 
   static doPlayerMove(source, target)
