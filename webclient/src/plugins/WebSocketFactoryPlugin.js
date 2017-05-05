@@ -7,11 +7,7 @@ export default class WebSocketFactoryPlugin
   /**
    * open a websocket connection to path, and try it keep it alive
    */
-  static get(path, options = {
-    keep_alive : true,
-    keep_alive_retry_interval : 5, //try to reconnect websocket every 5 seconds if it is closed
-    immediate_reconnect_on_close : true // reconnect websocket immediately when it is closed
-  }) {
+  static get(path, options) {
     if (this._wsMap == undefined) {
       this._wsMap = {};
     }

@@ -23,7 +23,7 @@ class BroadCastingServer extends WebSocketServer
     super.start(); //start the web server
 
     this
-      .addPath('/aimoveget')
+      .addPath('/ws/aimoveget')
       .getDefaultChannel()
       .onMessage = (message, client) => {
         client.send(message);

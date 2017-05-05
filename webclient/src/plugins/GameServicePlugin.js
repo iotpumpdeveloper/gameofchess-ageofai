@@ -15,6 +15,12 @@ export default class
     this.$eventbus = Vue.prototype.$eventbus;
     this.$wsFactory = Vue.prototype.$wsFactory;
 
+    this.$aiws = {};
+    this.$aiws.aimoveget = this.$wsFactory.get('/ws/aimoveget', {
+      keep_alive : false,
+      immediate_reconnect_on_close : true 
+    });
+
     this.$eventbus.$on('game_pgn_update', (pgn) => {
       var currentGameData = Storage.getItem('current_game_data');
       currentGameData.pgn = pgn;
@@ -57,7 +63,7 @@ export default class
       pgn : currentGameData.pgn,
       playerColor : currentGameData.playerColor
     };
-    
+
     Storage.setItem('saved_game_data', savedGameData);
   }
 
@@ -65,7 +71,7 @@ export default class
     var savedGameData = Storage.getItem('saved_game_data');
     Storage.setItem('current_game_data', savedGameData[gameId]);
     this.game.load_pgn(savedGameData[gameId].pgn);
-    
+
     var result = {
       game_id : gameId,
       moves : this.game.moves(),
@@ -83,9 +89,10 @@ export default class
     return savedGameData;
   }
 
-  static _doInBrowserAIMove()
+  static _doInBrowserAIMove(fen)
   {
-    var move = SimpleChessAI.getNextBestMove(this.game.fen()); //we just get the next best move based on the current fen string
+    console.log("fen string: " + fen);
+    var move = SimpleChessAI.getNextBestMove(fen); //we just get the next best move based on the current fen string
     this.game.ugly_move(move);  
     var result = {
       fen : this.game.fen(),
@@ -98,9 +105,10 @@ export default class
   }
 
   static doAIMove(resultHandler) {
-    this.$wsFactory.get('/aimoveget').sendMessage(this.game.fen(), (response) => {
-      console.log('received data from ai server');
-      resultHandler(this._doInBrowserAIMove());
+    var fen = this.game.fen();
+    this.$aiws.aimoveget.sendMessage(fen, (response) => {
+      console.log('received data from ai server: ' + response.data);
+      resultHandler(this._doInBrowserAIMove(fen));
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error);
       resultHandler(this._doInBrowserAIMove());
