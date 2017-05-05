@@ -83,27 +83,26 @@ export default class
     return savedGameData;
   }
 
+  static _doInBrowserAIMove()
+  {
+    var move = SimpleChessAI.getNextBestMove(this.game.fen()); //we just get the next best move based on the current fen string
+    this.game.ugly_move(move);  
+    var result = {
+      fen : this.game.fen(),
+      pgn : this.game.pgn(),
+      moves : this.game.moves(),
+      turn : this.game.turn(),
+      in_check : this.game.in_check(),
+    };
+    return result;
+  }
+
   static doAIMove(resultHandler) {
     this.$wsFactory.get('/aimoveget').sendMessage(this.game.fen(), (response) => {
-      var move = SimpleChessAI.getNextBestMove(this.game.fen()); //we just get the next best move based on the current fen string
-      this.game.ugly_move(move);  
-      var result = {
-        fen : this.game.fen(),
-        pgn : this.game.pgn(),
-        moves : this.game.moves(),
-        turn : this.game.turn(),
-        in_check : this.game.in_check(),
-      };
-      resultHandler(result);
+      resultHandler(this._doInBrowserAIMove());
     }, (error) => { //on error, we fall back to in-browser ai
-      var result = {
-        fen : this.game.fen(),
-        pgn : this.game.pgn(),
-        moves : this.game.moves(),
-        turn : this.game.turn(),
-        in_check : this.game.in_check(),
-      };
-      resultHandler(result);
+      console.log(error);
+      resultHandler(this._doInBrowserAIMove());
     }); 
   }
 
