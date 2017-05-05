@@ -57,12 +57,13 @@ export default {
     };
 
     var makeAIMove = () => {
-      var result = this.$gameservice.doAIMove();
-      //play some nice audios
-      var audio = new Audio('/audios/horse.ogg');
-      audio.play();
-      updateStatus(result);
-      board.position(result.fen);
+      this.$gameservice.doAIMove((result) => {
+        //play some nice audios
+        var audio = new Audio('/audios/horse.ogg');
+        audio.play();
+        updateStatus(result);
+        board.position(result.fen);
+      });
     };
 
     var onDrop = (source, target, piece, newPos, oldPos, orientation) => { 

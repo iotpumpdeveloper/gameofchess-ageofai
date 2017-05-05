@@ -27,7 +27,6 @@ class BroadCastingServer extends WebSocketServer
       .getDefaultChannel()
       .onMessage = (message, client) => {
         client.send(message);
-        client.close();
       }
 
     //add internal data path
