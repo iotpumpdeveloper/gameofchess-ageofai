@@ -34,8 +34,6 @@ for (var i = 0; i <= 100; i++) {
   //player move first, in white
   var moves = game.ugly_moves(); 
   var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
-  move.fromSquare = SQUARES_MAP[move.from];
-  move.toSquare = SQUARES_MAP[move.to];
   game.ugly_move(move);
 
   //ai move later, in black
@@ -43,13 +41,13 @@ for (var i = 0; i <= 100; i++) {
   var fenKey = querystring.escape(fen);
   var fenKeyEntry = experienceDBDir + '/' + fenKey;
   var move = SimpleChessAI.getNextBestMove(fen);
+  move.fromSquare = SQUARES_MAP[move.from];
+  move.toSquare = SQUARES_MAP[move.to];
   if (fs.existsSync(fenKeyEntry)) {
     console.log("fen entry exists in experience db");
   } else {
     fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
   }
-  move.fromSquare = SQUARES_MAP[move.from];
-  move.toSquare = SQUARES_MAP[move.to];
   game.ugly_move(move);
   console.log(i+1);
   console.log(move);
