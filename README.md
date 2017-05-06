@@ -14,3 +14,8 @@ sh install.sh
 sh run_demo.sh
 ```
 Now go to localhost, you should be able to see the game running.
+
+To stop the game servers, just do:
+```sh
+sh stop.sh
+```
