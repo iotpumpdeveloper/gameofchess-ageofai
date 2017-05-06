@@ -33,6 +33,8 @@ class BroadCastingServer extends WebSocketServer
         if (fs.existsSync(fenKeyEntry)) {
           var moveJSON = fs.readFileSync(fenKeyEntry);
           client.send(moveJSON);
+        } else {
+          client.send(''); //just send an empty string
         }
         client.close();
       }

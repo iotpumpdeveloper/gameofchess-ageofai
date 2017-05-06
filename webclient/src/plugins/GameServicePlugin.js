@@ -127,8 +127,11 @@ export default class
           resultHandler(this._doInBrowserAIMove(fen));
         }
       });
-      console.log(typeof response);
-      reader.readAsText(response.data);
+      if (typeof response.data == 'object') {
+        reader.readAsText(response.data);
+      } else {
+        resultHandler(this._doInBrowserAIMove(fen));
+      }
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error);
       resultHandler(this._doInBrowserAIMove(fen));
