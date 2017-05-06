@@ -5,6 +5,7 @@ An AI based chess game
 
 ## Running the Game
 To run the game, you should first [Install Node.js 7.x](https://nodejs.org/en/)
+also Nginx
 
 After that, just do:
 
