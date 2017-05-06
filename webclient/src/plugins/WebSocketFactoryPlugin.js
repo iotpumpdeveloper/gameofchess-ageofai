@@ -19,6 +19,7 @@ export default class WebSocketFactoryPlugin
       }
 
       this._wsMap[path] = {};
+      this._wsMap[path].options = options; //set path specific websocket options
       this._wsMap[path]._interval = () => {
         if (this._wsMap[path]._ws == undefined || this._wsMap[path]._ws.readyState == 3) {
           this._wsMap[path]._ws = new WebSocket(wsUrl);
@@ -28,7 +29,10 @@ export default class WebSocketFactoryPlugin
 
           this._wsMap[path].sendMessage = (message, _messageHandler, _errorHandler) => {
             this._wsMap[path]._message = message;
-            if (options['immediate_reconnect_on_close'] && this._wsMap[path]._ws.readyState == 3) { //the connection is closed, 
+            if (
+              this._wsMap[path].options['immediate_reconnect_on_close'] 
+              && this._wsMap[path]._ws.readyState == 3
+            ) { //the connection is closed, 
               this._wsMap[path]._ws = new WebSocket(wsUrl);
               this._wsMap[path]._ws.onopen = () => {
                 this._wsMap[path]._ws.send(this._wsMap[path]._message);
@@ -46,8 +50,8 @@ export default class WebSocketFactoryPlugin
           }
         }
 
-        if (options['keep_alive']) {
-          setTimeout(this._wsMap[path]._interval, options['keep_alive_retry_interval'] * 1000);
+        if (this._wsMap[path].options['keep_alive']) {
+          setTimeout(this._wsMap[path]._interval, this._wsMap[path].options['keep_alive_retry_interval'] * 1000);
         }
       }
 
