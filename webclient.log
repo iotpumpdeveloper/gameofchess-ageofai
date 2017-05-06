@@ -1,0 +1,9 @@
+
+> gameofchess-ageofai-webclient@1.0.0 dev /Users/jim.huang/iotpump/app/gameofchess-ageofai/webclient
+> cross-env NODE_ENV=development webpack-dev-server --hot --host 127.0.0.1 --port 8080
+
+Project is running at http://127.0.0.1:8080/
+webpack output is served from /dist/
+404s will fallback to /index.html
+(node:67385) DeprecationWarning: loaderUtils.parseQuery() received a non-string value which can be problematic, see https://github.com/webpack/loader-utils/issues/56
+parseQuery() will be replaced with getOptions() in the next major version of loader-utils.
