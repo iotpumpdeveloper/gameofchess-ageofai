@@ -57,12 +57,12 @@ export default {
     };
 
     var makeAIMove = () => {
-      this.$gameservice.doAIMove((result) => {
+      this.$gameservice.doAIMove((_result) => {
         //play some nice audios
         var audio = new Audio('/audios/horse.ogg');
         audio.play();
-        updateStatus(result);
-        board.position(result.fen);
+        updateStatus(_result);
+        board.position(_result.fen);
       });
     };
 
@@ -74,11 +74,11 @@ export default {
 
       var audio = new Audio('/audios/horse.ogg');
       audio.play();
+      updateStatus(result);
 
       // make AI-Based legal move for black
       window.setTimeout(makeAIMove, computerMoveInterval);
 
-      updateStatus(result);
     };
 
     // update the board position after the piece snap

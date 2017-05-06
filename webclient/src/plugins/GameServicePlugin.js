@@ -91,7 +91,6 @@ export default class
 
   static _doInBrowserAIMove(fen)
   {
-    console.log("fen string: " + fen);
     var move = SimpleChessAI.getNextBestMove(fen); //we just get the next best move based on the current fen string
     this.game.ugly_move(move);  
     var result = {
@@ -106,20 +105,14 @@ export default class
 
   static doAIMove(resultHandler) {
     var fen = this.game.fen();
+
     this.$aiws.aimoveget.sendMessage(fen, (response) => {
-      console.log('received data from ai server: ' + response.data);
       resultHandler(this._doInBrowserAIMove(fen));
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error);
-      resultHandler(this._doInBrowserAIMove());
+      resultHandler(this._doInBrowserAIMove(fen));
     }); 
 
-    if ( this.$wsFactory.get('/aimoveget').isClosed() ) { 
-      //if the websocket connection is completely closed, 
-      //fall back to in-browser ai
-      console.log('connection to ai server is closed');
-      resultHandler(this._doInBrowserAIMove());
-    }
   }
 
   static doPlayerMove(source, target)
