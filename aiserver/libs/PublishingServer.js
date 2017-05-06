@@ -42,11 +42,12 @@ class PublishingServer extends WebSocketServer
         } else {
           SimpleAI.setAIColor('black');
         }
-        var move = SimpleAI.getNextBestMove(this.game);
+        var fen = this.game.fen();
+        var move = SimpleAI.getNextBestMove(fen);
         this.game.ugly_move(move);
         this.broadcastMoveForFen({
           move : move,
-          fen : this.game.fen()
+          fen : fen
         }); 
 
         i++;
