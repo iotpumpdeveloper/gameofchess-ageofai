@@ -105,31 +105,23 @@ export default class
 
   static doAIMove(resultHandler) {
     var fen = this.game.fen();
-
     this.$aiws.aimoveget.sendMessage(fen, (response) => {
-      const reader = new FileReader();
-      reader.addEventListener('loadend', (e) => {
-        const text = e.srcElement.result;
-        var move = JSON.parse(text);
+      var _result = JSON.parse(response.data);
+      if (_result.success) {
+        var move = JSON.parse(_result.moveJSON);
+        console.log('got move from ai server');
         console.log(move);
-        if (typeof move == 'object') {
-          console.log('got move from ai server');
-          this.game.ugly_move(move);
-          var result = {
-            fen : this.game.fen(),
-            pgn : this.game.pgn(),
-            moves : this.game.moves(),
-            turn : this.game.turn(),
-            in_check : this.game.in_check(),
-          };
-          resultHandler(result);
-        } else { //no valid move from ai server, fall back to in-browser ai 
-          resultHandler(this._doInBrowserAIMove(fen));
-        }
-      });
-      if (typeof response.data == 'object') {
-        reader.readAsText(response.data);
-      } else {
+        this.game.ugly_move(move);
+        var result = {
+          fen : this.game.fen(),
+          pgn : this.game.pgn(),
+          moves : this.game.moves(),
+          turn : this.game.turn(),
+          in_check : this.game.in_check(),
+        };
+        resultHandler(result);
+      } else { //no valid move from ai server, fall back to in-browser ai 
+        console.log('fall back to in-browser ai move');
         resultHandler(this._doInBrowserAIMove(fen));
       }
     }, (error) => { //on error, we fall back to in-browser ai

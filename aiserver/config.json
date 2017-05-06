@@ -20,5 +20,6 @@
       "port" : 3003,
       "secretKey" : "11e3b43552a746eeae23adef5010db67"
     }
-  }
+  },
+  "experienceDBDir" : "experience"
 }

@@ -22,26 +22,26 @@ class BroadCastingServer extends WebSocketServer
   {
     super.start(); //start the web server
 
-    // given a fen string, get the next best ai move
-    this
-      .addPath('/ws/ai/move/get')
-      .getDefaultChannel()
-      .onMessage = (message, client) => {
-        var querystring = require('querystring');
-        var fs = require('fs');
-        var fen = message;
-        var fenKey = querystring.escape(fen);
-        var fenKeyEntry = __dirname + '/' + '../experience/' + fenKey;
-        fs.access(fenKeyEntry, (err) => {
-          if (!err) { //fen key entry exists
-            var moveJSON = fs.readFileSync(fenKeyEntry);
-            client.send(moveJSON);
-          } else {
-            client.send(''); //just send an empty string
-          }
-          client.close();
-        });
-      }
+    var routes = {
+      '/ws/ai/move/get' : 'ws/ai_move_get.js'
+    }
+
+    for (var path in routes) {
+      // given a fen string, get the next best ai move
+      this
+        .addPath(path)
+        .getDefaultChannel()
+        .onMessage = (message, client) => {
+          var context = {};
+          context.message = message;
+          context.client = client;
+          context.config = this.config;
+          context.rootDir = __dirname + '/..';
+
+          var handler = require(context.rootDir + '/handlers/' + routes[path]);
+          handler(context, client);
+        }
+    }
 
     // record the matching best move for a given fen string
 
