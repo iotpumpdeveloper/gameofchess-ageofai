@@ -102,7 +102,7 @@ export default class
       fen : fen,
       move : move
     }), (response) => {
-      if (response.data && response.data.success === true) {
+      if (response.data && JSON.parse(response.data).success === true) {
         console.log('ai just learned a move for this situation');
       }
     }); 
