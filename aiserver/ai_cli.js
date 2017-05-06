@@ -1,5 +1,8 @@
 var Chess = require(__dirname + '/../isomorphic/libs/chess.js').Chess;
 var SimpleChessAI = require(__dirname + '/../isomorphic/libs/SimpleChessAI.js'); 
+var querystring = require("querystring");
+var fs = require('fs');
+var experienceDBDir = __dirname + '/experience';
 
 var SQUARES = {
   a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
@@ -18,17 +21,33 @@ for( var key in SQUARES ) {
 }
 
 var game = new Chess();
-for (var i = 0; i <= 200; i++) {
+for (var i = 0; i <= 100; i++) {
   if (game.moves().length == 0) {
     console.log('Game over');
-    console.log(game.turn());
+    console.log(game.turn() + ' lost');
     break;
   } else if (game.in_stalemate() ) {
     console.log('Stale Mate');
     break;
   }
 
-  var move = SimpleChessAI.getNextBestMove(game.fen());
+  //player move first, in white
+  var moves = game.ugly_moves(); 
+  var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
+  move.fromSquare = SQUARES_MAP[move.from];
+  move.toSquare = SQUARES_MAP[move.to];
+  game.ugly_move(move);
+
+  //ai move later, in black
+  var fen = game.fen();
+  var fenKey = querystring.escape(fen);
+  var fenKeyEntry = experienceDBDir + '/' + fenKey;
+  var move = SimpleChessAI.getNextBestMove(fen);
+  if (fs.existsSync(fenKeyEntry)) {
+    console.log("fen entry exists in experience db");
+  } else {
+    fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
+  }
   move.fromSquare = SQUARES_MAP[move.from];
   move.toSquare = SQUARES_MAP[move.to];
   game.ugly_move(move);
