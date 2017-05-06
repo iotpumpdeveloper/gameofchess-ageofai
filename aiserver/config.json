@@ -1,25 +1,28 @@
 {
-  "servers" : {
-    "s0" : {
-      "host" : "127.0.0.1",
-      "port" : 3000,
-      "secretKey" : "8307b7ebe1dd466d8a1af7d2ce03a397"
+    "servers" : {
+        "s0" : {
+            "host" : "127.0.0.1",
+            "port" : 3000,
+            "secretKey" : "8307b7ebe1dd466d8a1af7d2ce03a397"
+        },
+        "s1" : {
+            "host" : "127.0.0.1",
+            "port" : 3001,
+            "secretKey" : "16f6fc685a2747abbc91ee59b2427304"
+        },
+        "s2" : {
+            "host" : "127.0.0.1",
+            "port" : 3002,
+            "secretKey" : "c2801f2559434508921822bbc05de746"
+        },
+        "s3" : {
+            "host" : "127.0.0.1",
+            "port" : 3003,
+            "secretKey" : "11e3b43552a746eeae23adef5010db67"
+        }
     },
-    "s1" : {
-      "host" : "127.0.0.1",
-      "port" : 3001,
-      "secretKey" : "16f6fc685a2747abbc91ee59b2427304"
-    },
-    "s2" : {
-      "host" : "127.0.0.1",
-      "port" : 3002,
-      "secretKey" : "c2801f2559434508921822bbc05de746"
-    },
-    "s3" : {
-      "host" : "127.0.0.1",
-      "port" : 3003,
-      "secretKey" : "11e3b43552a746eeae23adef5010db67"
+    "experienceDBDir" : "experience",
+    "routes" : {
+        "/ws/ai/move/get" : "ws/ai_move_get.js"
     }
-  },
-  "experienceDBDir" : "experience"
 }

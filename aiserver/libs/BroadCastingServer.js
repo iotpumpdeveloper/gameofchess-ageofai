@@ -22,11 +22,9 @@ class BroadCastingServer extends WebSocketServer
   {
     super.start(); //start the web server
 
-    var routes = {
-      '/ws/ai/move/get' : 'ws/ai_move_get.js'
-    }
-
-    for (var path in routes) {
+    //map application routes
+    var routes = this.config.routes;
+    for (var path in this.config.routes) {
       // given a fen string, get the next best ai move
       this
         .addPath(path)
@@ -42,9 +40,6 @@ class BroadCastingServer extends WebSocketServer
           handler(context, client);
         }
     }
-
-    // record the matching best move for a given fen string
-
 
     //add internal data path
     var idpName = InternalDataPathName.onServer(this.serverName); 
