@@ -16,7 +16,7 @@ export default class
     this.$wsFactory = Vue.prototype.$wsFactory;
 
     this.$aiws = {};
-    this.$aiws.aimoveget = this.$wsFactory.get('/ws/aimoveget', {
+    this.$aiws.aimoveget = this.$wsFactory.get('/ws/ai/move/get', {
       keep_alive : false,
       immediate_reconnect_on_close : true 
     });
