@@ -14,7 +14,6 @@ class Channel
   addClient(client)
   {
     client.channel = this.name; //very important
-    this.clients[client.id]  = client;
   
     //hook up the client's message event 
     var messageHandler = (message) => {
@@ -22,6 +21,8 @@ class Channel
     }
 
     client.on('message', messageHandler); 
+    this.clients[client.id]  = client;
+    
   }
 
   broadcast(message)

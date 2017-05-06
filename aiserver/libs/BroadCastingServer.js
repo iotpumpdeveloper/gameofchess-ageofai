@@ -20,8 +20,6 @@ class BroadCastingServer extends WebSocketServer
 
   start()
   {
-    super.start(); //start the web server
-
     //map application routes
     var routes = this.config.routes;
     for (var path in this.config.routes) {
@@ -35,8 +33,7 @@ class BroadCastingServer extends WebSocketServer
           context.client = client;
           context.config = this.config;
           context.rootDir = __dirname + '/..';
-
-          var handler = require(context.rootDir + '/handlers/' + routes[path]);
+          var handler = require(context.rootDir + '/handlers/' + routes[client.path.path]);
           handler(context, client);
         }
     }
@@ -51,5 +48,6 @@ class BroadCastingServer extends WebSocketServer
         console.log(messageObj);
       }
 
+    super.start(); //start the web server
   }
 }

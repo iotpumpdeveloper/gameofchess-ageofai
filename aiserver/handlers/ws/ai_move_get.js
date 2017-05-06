@@ -1,3 +1,7 @@
+/**
+ * get the next ai move
+ */
+
 module.exports = 
   (context, client) => {
     var querystring = require('querystring');

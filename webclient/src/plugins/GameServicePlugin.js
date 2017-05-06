@@ -21,6 +21,11 @@ export default class
       immediate_reconnect_on_close : true 
     });
 
+    this.$aiws.aimoverecord = this.$wsFactory.get('/ws/ai/move/record', {
+      keep_alive : false,
+      immediate_reconnect_on_close : true 
+    });
+
     this.$eventbus.$on('game_pgn_update', (pgn) => {
       var currentGameData = Storage.getItem('current_game_data');
       currentGameData.pgn = pgn;
@@ -92,6 +97,15 @@ export default class
   static _doInBrowserAIMove(fen)
   {
     var move = SimpleChessAI.getNextBestMove(fen); //we just get the next best move based on the current fen string
+    //let ai server record fen, move pair so that it actually "learn"
+    this.$aiws.aimoverecord.sendMessage(JSON.stringify({
+      fen : fen,
+      move : move
+    }), (response) => {
+      if (response.data && response.data.success === true) {
+        console.log('ai just learned a move for this situation');
+      }
+    }); 
     this.game.ugly_move(move);  
     var result = {
       fen : this.game.fen(),

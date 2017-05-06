@@ -23,6 +23,7 @@
     },
     "experienceDBDir" : "experience",
     "routes" : {
-        "/ws/ai/move/get" : "ws/ai_move_get.js"
+        "/ws/ai/move/get" : "ws/ai_move_get.js",
+        "/ws/ai/move/record" : "ws/ai_move_record.js"
     }
 }
