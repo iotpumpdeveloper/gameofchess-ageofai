@@ -107,7 +107,28 @@ export default class
     var fen = this.game.fen();
 
     this.$aiws.aimoveget.sendMessage(fen, (response) => {
-      resultHandler(this._doInBrowserAIMove(fen));
+      const reader = new FileReader();
+      reader.addEventListener('loadend', (e) => {
+        const text = e.srcElement.result;
+        var move = JSON.parse(text);
+        console.log(move);
+        if (typeof move == 'object') {
+          console.log('got move from ai server');
+          this.game.ugly_move(move);
+          var result = {
+            fen : this.game.fen(),
+            pgn : this.game.pgn(),
+            moves : this.game.moves(),
+            turn : this.game.turn(),
+            in_check : this.game.in_check(),
+          };
+          resultHandler(result);
+        } else { //no valid move from ai server, fall back to in-browser ai 
+          resultHandler(this._doInBrowserAIMove(fen));
+        }
+      });
+      console.log(typeof response);
+      reader.readAsText(response.data);
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error);
       resultHandler(this._doInBrowserAIMove(fen));

@@ -20,36 +20,39 @@ for( var key in SQUARES ) {
   SQUARES_MAP[SQUARES[key]] = key;
 }
 
-var game = new Chess();
-for (var i = 0; i <= 100; i++) {
-  if (game.moves().length == 0) {
-    console.log('Game over');
-    console.log(game.turn() + ' lost');
-    break;
-  } else if (game.in_stalemate() ) {
-    console.log('Stale Mate');
-    break;
-  }
+for (n = 1; n <= 100; n++) {
+  var game = new Chess();
+  for (var i = 0; i <= 100; i++) {
+    if (game.moves().length == 0) {
+      console.log('Game over');
+      console.log(game.turn() + ' lost');
+      break;
+    } else if (game.in_stalemate() ) {
+      console.log('Stale Mate');
+      break;
+    }
 
-  //player move first, in white
-  var moves = game.ugly_moves(); 
-  var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
-  game.ugly_move(move);
+    //player move first, in white
+    var moves = game.ugly_moves(); 
+    var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
+    game.ugly_move(move);
 
-  //ai move later, in black
-  var fen = game.fen();
-  var fenKey = querystring.escape(fen);
-  var fenKeyEntry = experienceDBDir + '/' + fenKey;
-  var move = SimpleChessAI.getNextBestMove(fen);
-  move.fromSquare = SQUARES_MAP[move.from];
-  move.toSquare = SQUARES_MAP[move.to];
-  if (fs.existsSync(fenKeyEntry)) {
-    console.log("fen entry exists in experience db");
-  } else {
-    fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
+    //ai move later, in black
+    var fen = game.fen();
+    var fenKey = querystring.escape(fen);
+    var fenKeyEntry = experienceDBDir + '/' + fenKey;
+    var move = SimpleChessAI.getNextBestMove(fen);
+    move.fromSquare = SQUARES_MAP[move.from];
+    move.toSquare = SQUARES_MAP[move.to];
+    if (fs.existsSync(fenKeyEntry)) {
+      console.log("fen entry exists in experience db");
+    } else {
+      fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
+    }
+    game.ugly_move(move);
+    console.log(i+1);
+    console.log(move);
+    console.log('--------------------------');
   }
-  game.ugly_move(move);
-  console.log(i+1);
-  console.log(move);
-  console.log('--------------------------');
+  console.log('finish game simulation ' + n);
 }

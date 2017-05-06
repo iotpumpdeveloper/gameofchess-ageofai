@@ -3,6 +3,8 @@ const WebSocketClient = require('./WebSocketClient');
 const Path = require('./Path');
 const Config = require('./Config');
 const InternalDataPathName = require('./InternalDataPathName');
+const querystring = require('querystring');
+const fs = require('fs');
 
 module.exports = 
 class BroadCastingServer extends WebSocketServer
@@ -25,8 +27,13 @@ class BroadCastingServer extends WebSocketServer
     this
       .addPath('/ws/ai/move/get')
       .getDefaultChannel()
-      .onMessage = (message, client) => {
-        client.send(message);
+      .onMessage = (fen, client) => {
+        var fenKey = querystring.escape(fen);
+        var fenKeyEntry = __dirname + '/' + '../experience/' + fenKey;
+        if (fs.existsSync(fenKeyEntry)) {
+          var moveJSON = fs.readFileSync(fenKeyEntry);
+          client.send(moveJSON);
+        }
         client.close();
       }
 
