@@ -44,21 +44,24 @@ class PublishingServer extends WebSocketServer
         }
         var move = SimpleAI.getNextBestMove(this.game);
         this.game.ugly_move(move);
-        this.broadcastMove(move); 
+        this.broadcastMoveForFen({
+          move : move,
+          fen : this.game.fen()
+        }); 
 
         i++;
       }
     }, 50);
   }
 
-  broadcastMove(move) 
+  broadcastMoveForFen(info) 
   {
     var broadcastors = this.broadcastors;
 
     //start publish the move to the broadcasting servers
     for (var name in broadcastors) {
       if (broadcastors[name].readyState == 1) {
-        broadcastors[name].send(JSON.stringify(move));
+        broadcastors[name].send(JSON.stringify(info));
       } 
     }
   }
