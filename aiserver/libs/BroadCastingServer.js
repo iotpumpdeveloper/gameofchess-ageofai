@@ -30,13 +30,15 @@ class BroadCastingServer extends WebSocketServer
       .onMessage = (fen, client) => {
         var fenKey = querystring.escape(fen);
         var fenKeyEntry = __dirname + '/' + '../experience/' + fenKey;
-        if (fs.existsSync(fenKeyEntry)) {
-          var moveJSON = fs.readFileSync(fenKeyEntry);
-          client.send(moveJSON);
-        } else {
-          client.send(''); //just send an empty string
-        }
-        client.close();
+        fs.access(fenKeyEntry, (err) => {
+          if (!err) { //fen key entry exists
+            var moveJSON = fs.readFileSync(fenKeyEntry);
+            client.send(moveJSON);
+          } else {
+            client.send(''); //just send an empty string
+          }
+          client.close();
+        });
       }
 
     //add internal data path
