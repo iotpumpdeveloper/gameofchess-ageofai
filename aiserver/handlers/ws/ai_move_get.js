@@ -24,7 +24,7 @@ module.exports =
       //fenkey does not exist in experience yet, try reading from the experience db
       fs.access(fenKeyEntry, (err) => {
         if (!err) { //fen key entry exists
-          var moveJSON = fs.readFileSync(fenKey).toString().trim();
+          var moveJSON = fs.readFileSync(fenKeyEntry).toString().trim();
           //cache this experience to the in-memory storage
           context.storage.experience[fenKey] = moveJSON;
           client.endJSON({
