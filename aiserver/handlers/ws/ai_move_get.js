@@ -12,8 +12,8 @@ module.exports =
       var fenKeyEntry =  context.rootDir + '/../' + context.config.experienceDBDir + '/' + fenKey;
 
       //first, check if the fenKey exists in experience yet 
-      if (context.storage.experience[fenKeyEntry] != undefined) {
-        var moveJSON = context.storage.experience[fenKeyEntry];
+      if (context.storage.experience[fenKey] != undefined) {
+        var moveJSON = context.storage.experience[fenKey];
         client.endJSON({
           success : true,
           moveJSON : moveJSON
@@ -21,19 +21,12 @@ module.exports =
         return;
       }
 
-      //fenKey not in experience yet, add to the move query queue 
-      if (this.storage.mqm[fenKeyEntry] == undefined ) { //the fenKeyEntry is not in the messsage query map yet
-        this.storage.mqq.push(fenKeyEntry);
-        this.storage.mqm[fenKeyEntry] = 1;
-      }
-      client.endJSON({
-        success : false
-      }); 
-
-      /*
+      //fenkey does not exist in experience yet, try reading from the experience db
       fs.access(fenKeyEntry, (err) => {
         if (!err) { //fen key entry exists
-          var moveJSON = fs.readFileSync(fenKeyEntry).toString().trim();
+          var moveJSON = fs.readFileSync(fenKey).toString().trim();
+          //cache this experience to the in-memory storage
+          context.storage.experience[fenKey] = moveJSON;
           client.endJSON({
             success : true,
             moveJSON : moveJSON
@@ -44,7 +37,6 @@ module.exports =
           }); 
         }
       });
-      */
     } else {
       client.endJSON({
         success : false

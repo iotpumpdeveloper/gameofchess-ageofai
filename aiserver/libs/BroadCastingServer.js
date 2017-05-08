@@ -19,8 +19,6 @@ class BroadCastingServer extends WebSocketServer
 
     this.storage = {}; //initiate an in-server storage
     this.storage.experience = {}; //storage the experience (fen => move pairs)
-    this.storage.mqq = []; //mqq -- move query queue, holding all fen strings need to get a move for
-    this.storage.mqm = {}; //mqm -- move query map, holding all existing fen strings that need to get a move for
   }
 
   start()

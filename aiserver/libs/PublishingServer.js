@@ -22,12 +22,13 @@ class PublishingServer extends WebSocketServer
 
     this.config = config;
     this.serverName = serverName;
-
-    this.game = new Chess();
   }
 
   start() 
   {
+    
+    
+
     var config = this.config;
     //maintain a list of web sockets connecting to each broadcasting server's idp
     //and keep them alived
