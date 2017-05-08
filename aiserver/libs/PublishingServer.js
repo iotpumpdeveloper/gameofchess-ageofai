@@ -26,47 +26,6 @@ class PublishingServer extends WebSocketServer
     this.game = new Chess();
   }
 
-  startPublishMove()
-  {
-    // we must write it in a non-blocking fashion
-    var i;
-    setInterval( () => {
-      if (this.game.moves().length == 0) {
-        console.log('Game over');
-        console.log(game.turn());
-      } else if (this.game.in_stalemate() ) {
-        console.log('Stale Mate');
-      } else {
-        if (i % 2 == 0) {
-          SimpleAI.setAIColor('white');
-        } else {
-          SimpleAI.setAIColor('black');
-        }
-        var fen = this.game.fen();
-        var move = SimpleAI.getNextBestMove(fen);
-        this.game.ugly_move(move);
-        this.broadcastMoveForFen({
-          move : move,
-          fen : fen
-        }); 
-
-        i++;
-      }
-    }, 50);
-  }
-
-  broadcastMoveForFen(info) 
-  {
-    var broadcastors = this.broadcastors;
-
-    //start publish the move to the broadcasting servers
-    for (var name in broadcastors) {
-      if (broadcastors[name].readyState == 1) {
-        broadcastors[name].send(JSON.stringify(info));
-      } 
-    }
-  }
-
   start() 
   {
     var config = this.config;

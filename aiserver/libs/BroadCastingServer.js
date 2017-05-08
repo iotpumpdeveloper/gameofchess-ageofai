@@ -16,6 +16,11 @@ class BroadCastingServer extends WebSocketServer
     this.config = config;
 
     this.serverName = serverName;
+
+    this.storage = {}; //initiate an in-server storage
+    this.storage.experience = {}; //storage the experience (fen => move pairs)
+    this.storage.mqq = []; //mqq -- move query queue, holding all fen strings need to get a move for
+    this.storage.mqm = {}; //mqm -- move query map, holding all existing fen strings that need to get a move for
   }
 
   start()
@@ -23,7 +28,6 @@ class BroadCastingServer extends WebSocketServer
     //map application routes
     var routes = this.config.routes;
     for (var path in this.config.routes) {
-      // given a fen string, get the next best ai move
       this
         .addPath(path)
         .getDefaultChannel()
@@ -33,6 +37,7 @@ class BroadCastingServer extends WebSocketServer
           context.client = client;
           context.config = this.config;
           context.rootDir = __dirname + '/..';
+          context.storage = this.storage;
           var handler = require(context.rootDir + '/handlers/' + routes[client.path.path]);
           handler(context, client);
         }

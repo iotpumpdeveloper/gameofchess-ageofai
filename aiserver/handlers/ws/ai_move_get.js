@@ -10,24 +10,44 @@ module.exports =
     if (typeof fen == 'string' && fen.length > 0) {
       var fenKey = querystring.escape(fen);
       var fenKeyEntry =  context.rootDir + '/../' + context.config.experienceDBDir + '/' + fenKey;
+
+      //first, check if the fenKey exists in experience yet 
+      if (context.storage.experience[fenKeyEntry] != undefined) {
+        var moveJSON = context.storage.experience[fenKeyEntry];
+        client.endJSON({
+          success : true,
+          moveJSON : moveJSON
+        });
+        return;
+      }
+
+      //fenKey not in experience yet, add to the move query queue 
+      if (this.storage.mqm[fenKeyEntry] == undefined ) { //the fenKeyEntry is not in the messsage query map yet
+        this.storage.mqq.push(fenKeyEntry);
+        this.storage.mqm[fenKeyEntry] = 1;
+      }
+      client.endJSON({
+        success : false
+      }); 
+
+      /*
       fs.access(fenKeyEntry, (err) => {
         if (!err) { //fen key entry exists
           var moveJSON = fs.readFileSync(fenKeyEntry).toString().trim();
-          client.sendJSON({
+          client.endJSON({
             success : true,
             moveJSON : moveJSON
           });
         } else {
-          client.sendJSON({
+          client.endJSON({
             success : false
           }); 
         }
-        client.close();
       });
+      */
     } else {
-      client.sendJSON({
+      client.endJSON({
         success : false
       }); 
-      client.close();
     }
   }

@@ -9,6 +9,11 @@ ws.prototype.sendJSON = function(o) {
   this.send(JSON.stringify(o));
 }
 
+ws.prototype.endJSON = function(o) {
+  this.send(JSON.stringify(o));
+  this.close();
+}
+
 module.exports = 
 class WebSocketClient
 {
