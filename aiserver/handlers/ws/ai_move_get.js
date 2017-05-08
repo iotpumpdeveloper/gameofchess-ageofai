@@ -3,9 +3,9 @@
  */
 
 module.exports = 
-  (context, client) => {
+async (context, client) => {
     var querystring = require('querystring');
-    var fs = require('fs');
+    var fs = require(__dirname + '/../../libs/FileSystem.js');
     var fen = context.message;
     if (typeof fen == 'string' && fen.length > 0) {
       var fenKey = querystring.escape(fen);
@@ -23,10 +23,11 @@ module.exports =
       }
 
       //fenkey does not exist in experience yet, try reading from the experience db
-      fs.access(fenKeyEntry, (err) => {
-        if (!err) { //fen key entry exists
-          var moveJSON = fs.readFileSync(fenKeyEntry).toString().trim();
+      try {
+        if (await fs.exists(fenKeyEntry)) {
+          var moveJSON = await fs.readFile(fenKeyEntry);
           //cache this experience to the in-memory storage
+          console.log("caching fenKey " + fenKey + " in memory");
           context.storage.experience[fenKey] = moveJSON;
           client.endJSON({
             success : true,
@@ -37,10 +38,14 @@ module.exports =
             success : false
           }); 
         }
-      });
+      } catch(err) {
+        client.endJSON({
+          success : false
+        }); 
+      }
     } else {
       client.endJSON({
         success : false
       }); 
     }
-  }
+}
