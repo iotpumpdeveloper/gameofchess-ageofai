@@ -13,6 +13,7 @@ module.exports =
 
       //first, check if the fenKey exists in experience yet 
       if (context.storage.experience[fenKey] != undefined) {
+        console.log("reading fenKey " + fenKey + " from memory");
         var moveJSON = context.storage.experience[fenKey];
         client.endJSON({
           success : true,
