@@ -6,7 +6,7 @@ const InternalDataPathName = require('./InternalDataPathName');
 const DBFactory = require('./DBFactory');
 
 module.exports = 
-class BroadCastingServer extends WebSocketServer
+class ApplicationServer extends WebSocketServer
 {
   constructor(serverName)
   {
@@ -26,6 +26,15 @@ class BroadCastingServer extends WebSocketServer
 
     this.dbFactory = DBFactory;
     this.db = DBFactory.getInstance(serverName);
+  }
+
+  //connect to another server
+  connectToServer(serverName)
+  {
+    return new WebSocketClient(
+      this.config.servers[serverName], 
+      InternalDataPathName.onServer(serverName)
+    ).connect();
   }
 
   start()

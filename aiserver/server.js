@@ -26,7 +26,7 @@ if (serverName in config.servers) {
     var PublishingServer = require('./libs/PublishingServer');
     new PublishingServer(serverName).start();
   } else{
-    var BroadCastingServer = require('./libs/BroadCastingServer');
-    new BroadCastingServer(serverName).start();
+    var ApplicationServer = require('./libs/ApplicationServer');
+    new ApplicationServer(serverName).start();
   }
 }
