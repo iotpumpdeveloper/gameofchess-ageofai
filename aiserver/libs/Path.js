@@ -20,6 +20,11 @@ class Path
     this.channels[this.defaultChannelName] = new Channel(this.defaultChannelName); 
   }
 
+  getName()
+  {
+    return this.path;
+  }
+
   addConnectedClient(client)
   {
     client.id = shortid.generate();
