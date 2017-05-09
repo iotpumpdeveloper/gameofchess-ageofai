@@ -2,7 +2,7 @@ const WebSocketServer = require('./WebSocketServer');
 const WebSocketClient = require('./WebSocketClient');
 const Path = require('./Path');
 const Config = require('./Config');
-const InternalDataPathName = require('./InternalDataPathName');
+const EncryptedPath = require('./EncryptedPath');
 const DBFactory = require('./DBFactory');
 
 module.exports = 
@@ -25,6 +25,8 @@ class ApplicationServer extends WebSocketServer
     this.rootDir = __dirname + '/..';
 
     this.dbFactory = DBFactory;
+
+    this.dbMessagingPath = new EncryptedPath('db_messaging', serverName);
   }
 
   //connect to another server
@@ -32,7 +34,7 @@ class ApplicationServer extends WebSocketServer
   {
     return new WebSocketClient(
       this.config.servers[serverName], 
-      InternalDataPathName.onServer(serverName)
+      this.dbMessagingPath
     ).connect();
   }
 
@@ -59,10 +61,8 @@ class ApplicationServer extends WebSocketServer
 
     //add encripted path
 
-    //add internal data path
-    var idpName = InternalDataPathName.onServer(this.serverName); 
     this
-      .addPath(idpName)
+      .addPath(this.dbMessagingPath)
       .getDefaultChannel()
       .onMessage = (message) => { //now there is incoming message on idp of this server
         var messageObj = JSON.parse(message);

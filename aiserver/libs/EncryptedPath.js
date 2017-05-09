@@ -5,6 +5,7 @@ const Path = require('./Path');
 const EncryptionUtil = require('./EncryptionUtil');
 const Config = require('./Config');
 
+module.exports=
 class EncryptedPath extends Path 
 {
   constructor(name, serverName) 
