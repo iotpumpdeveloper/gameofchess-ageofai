@@ -1,9 +1,10 @@
 var args = process.argv;
 
 if (args.length < 3) {
-  console.log("Missing server type");
-  console.log("example: node server.js s0");
+  console.log("Missing server name");
   console.log("example: node server.js s1");
+  console.log("example: node server.js s2");
+  console.log("example: node server.js s3");
   process.exit();
 }
 
@@ -22,11 +23,6 @@ var serverName = args[2].trim();
 var config = Config.get();
 
 if (serverName in config.servers) {
-  if (serverName == 's0') {
-    var PublishingServer = require('./libs/PublishingServer');
-    new PublishingServer(serverName).start();
-  } else{
-    var ApplicationServer = require('./libs/ApplicationServer');
-    new ApplicationServer(serverName).start();
-  }
+  var ApplicationServer = require('./libs/ApplicationServer');
+  new ApplicationServer(serverName).start();
 }

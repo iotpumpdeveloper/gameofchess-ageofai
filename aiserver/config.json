@@ -1,10 +1,5 @@
 {
     "servers" : {
-        "s0" : {
-            "host" : "127.0.0.1",
-            "port" : 3000,
-            "secretKey" : "8307b7ebe1dd466d8a1af7d2ce03a397"
-        },
         "s1" : {
             "host" : "127.0.0.1",
             "port" : 3001,
@@ -21,7 +16,6 @@
             "secretKey" : "11e3b43552a746eeae23adef5010db67"
         }
     },
-    "experienceDBDir" : "experience",
     "routes" : {
         "/ws/ai/move/get" : "ws/ai_move_get.js",
         "/ws/ai/move/record" : "ws/ai_move_record.js"

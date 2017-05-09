@@ -18,9 +18,6 @@ class ApplicationServer extends WebSocketServer
 
     this.serverName = serverName;
 
-    this.storage = {}; //initiate an in-server storage
-    this.storage.experience = {}; //storage the experience (fen => move pairs)
-
     //the root directory
     this.rootDir = __dirname + '/..';
 

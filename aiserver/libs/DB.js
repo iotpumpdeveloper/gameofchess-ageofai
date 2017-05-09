@@ -33,14 +33,16 @@ module.exports =
     }
 
     var entryPath = this.dbDir + '/' + setName + '/' + entryName;
-    if (await fs.exists(entryPath) ) {
-      await fs.writeFile(entryPath, entryValue); //save entry to disk 
-      this.storage[setName][entryName] = entryValue;  //save entry to in-memory stroage
-    }
+    await fs.writeFile(entryPath, entryValue); //save entry to disk 
+    this.storage[setName][entryName] = entryValue;  //save entry to in-memory stroage
   }
 
   getEntry(setName, entryName)
   {
-    return this.storage[setName][entryName];
+    var result;
+    if (this.storage[setName] != undefined && this.storage[setName][entryName] != undefined ) {
+      result = this.storage[setName][entryName];
+    }
+    return result;
   }
 }

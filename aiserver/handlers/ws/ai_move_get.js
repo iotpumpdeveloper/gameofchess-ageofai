@@ -9,37 +9,16 @@ async (context, client) => {
     var fen = context.message;
     if (typeof fen == 'string' && fen.length > 0) {
       var fenKey = querystring.escape(fen);
-      var fenKeyEntry =  context.rootDir + '/../' + context.config.experienceDBDir + '/' + fenKey;
+      var db = context.dbFactory.getInstanceForKey(fenKey);
 
-      //first, check if the fenKey exists in experience yet 
-      if (context.storage.experience[fenKey] != undefined) {
+      var moveJSON = db.getEntry('experience', fenKey);
+      if (moveJSON != undefined) {
         console.log("reading fenKey " + fenKey + " from memory");
-        var moveJSON = context.storage.experience[fenKey];
         client.endJSON({
           success : true,
           moveJSON : moveJSON
         });
-        return;
-      }
-
-      //fenkey does not exist in experience yet, try reading from the experience db
-      try {
-        if (await fs.exists(fenKeyEntry)) {
-          var moveJSON = await fs.readFile(fenKeyEntry);
-          //cache this experience to the in-memory storage
-          console.log("caching fenKey " + fenKey + " in memory");
-          context.storage.experience[fenKey] = moveJSON;
-          client.endJSON({
-            success : true,
-            moveJSON : moveJSON
-          });
-        } else {
-          client.endJSON({
-            success : false
-          }); 
-        }
-      } catch(err) {
-        console.log(err);
+      } else {
         client.endJSON({
           success : false
         }); 

@@ -11,7 +11,7 @@ module.exports =
       var fenKey = querystring.escape(fen);
       var db = context.dbFactory.getInstanceForKey(fenKey);
       try {
-        context.db.saveEntry('experience', fenKey, JSON.stringify(move));
+        await db.saveEntry('experience', fenKey, JSON.stringify(move));
         client.endJSON({
           success : true,
         });
