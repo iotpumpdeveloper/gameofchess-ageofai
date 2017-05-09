@@ -39,6 +39,7 @@ async (context, client) => {
           }); 
         }
       } catch(err) {
+        console.log(err);
         client.endJSON({
           success : false
         }); 

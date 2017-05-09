@@ -3,6 +3,7 @@ const WebSocketClient = require('./WebSocketClient');
 const Path = require('./Path');
 const Config = require('./Config');
 const InternalDataPathName = require('./InternalDataPathName');
+const DBFactory = require('./DBFactory');
 
 module.exports = 
 class BroadCastingServer extends WebSocketServer
@@ -19,6 +20,12 @@ class BroadCastingServer extends WebSocketServer
 
     this.storage = {}; //initiate an in-server storage
     this.storage.experience = {}; //storage the experience (fen => move pairs)
+
+    //the root directory
+    this.rootDir = __dirname + '/..';
+
+    this.dbFactory = DBFactory;
+    this.db = DBFactory.getInstance(serverName);
   }
 
   start()
@@ -34,8 +41,9 @@ class BroadCastingServer extends WebSocketServer
           context.message = message;
           context.client = client;
           context.config = this.config;
-          context.rootDir = __dirname + '/..';
-          context.storage = this.storage;
+          context.rootDir = this.rootDir;
+          context.dbFactory = this.dbFactory;
+          context.db = this.db;
           var handler = require(context.rootDir + '/handlers/' + routes[client.path.path]);
           handler(context, client);
         }
