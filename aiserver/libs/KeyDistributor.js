@@ -21,6 +21,5 @@ module.exports =
     var numOfVirtualServerNames = this.virtualServerNames.length;
     var index = Math.abs(CRC32.str(md5(key))) % numOfVirtualServerNames;
     return this.virtualServerNames[index];
-
   }
 }

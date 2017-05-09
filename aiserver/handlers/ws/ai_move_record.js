@@ -9,6 +9,7 @@ module.exports =
     var move = messageObj.move;
     if (typeof fen == 'string' && fen.length > 0) {
       var fenKey = querystring.escape(fen);
+      var db = context.dbFactory.getInstanceForKey(fenKey);
       try {
         context.db.saveEntry('experience', fenKey, JSON.stringify(move));
         client.endJSON({

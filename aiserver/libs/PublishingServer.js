@@ -26,36 +26,7 @@ class PublishingServer extends WebSocketServer
 
   start() 
   {
-    
-    
-
-    var config = this.config;
-    //maintain a list of web sockets connecting to each broadcasting server's idp
-    //and keep them alived
-    var broadcastors = [];
-    var noop = () => {};
-
-    var initBroadcastors = ()=> {
-      for (var serverName in config.servers) {
-        if (serverName != this.serverName) { //broadcasting servers 
-          if (broadcastors[serverName] == undefined 
-            || broadcastors[serverName].readyState == 3) {
-            broadcastors[serverName] = new WebSocketClient(
-              config.servers[serverName], 
-              InternalDataPathName.onServer(serverName)
-            ).connect();
-            broadcastors[serverName].on('error', noop);
-          }
-        }
-      }
-      this.broadcastors = broadcastors;
-      setTimeout(initBroadcastors, 3000);
-    };
-
-    initBroadcastors();
-
-    this.startPublishMove();
-
+    //TODO...
     //start the server
     super.start();
 

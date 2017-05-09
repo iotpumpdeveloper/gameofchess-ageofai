@@ -25,7 +25,6 @@ class ApplicationServer extends WebSocketServer
     this.rootDir = __dirname + '/..';
 
     this.dbFactory = DBFactory;
-    this.db = DBFactory.getInstance(serverName);
   }
 
   //connect to another server
@@ -57,6 +56,8 @@ class ApplicationServer extends WebSocketServer
           handler(context, client);
         }
     }
+
+    //add encripted path
 
     //add internal data path
     var idpName = InternalDataPathName.onServer(this.serverName); 

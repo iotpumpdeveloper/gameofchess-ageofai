@@ -1,23 +1,23 @@
 /**
- * An Internal Data Channel is a unique channel for an internal server to send and receive data from another internal server
+ * an encrypted path on a specific server
  */
+const Path = require('./Path');
 const EncryptionUtil = require('./EncryptionUtil');
 const Config = require('./Config');
 
-module.exports = 
-class InternalDataPathName
+class EncryptedPath extends Path 
 {
-  static onServer(serverName)
+  constructor(name, serverName) 
   {
     var config = Config.get();
     var serverInfo = config.servers[serverName];
     serverInfo.name = serverName;
     serverInfo.secretKey = config.servers[serverName].secretKey;
-
-    var pathName = '/' + EncryptionUtil.get_sha512(
+    
+    var path = '/' + EncryptionUtil.get_sha512(
       JSON.stringify(serverInfo)
     );
 
-    return pathName;
+    super(path);
   }
 }

@@ -1,14 +1,16 @@
 const Config = require('./Config');
+const KeyDistributor = require('./KeyDistributor');
 
 module.exports =
 class DBFactory
 {
-  static getInstance(serverName)
+  static getInstanceByServerName(serverName)
   {
     var config = Config.get();
 
     if (this.db == undefined) {
       this.db = {};
+      this.keyDistributor = new KeyDistributor();
     }
 
     if (this.db[serverName] == undefined) {
@@ -19,5 +21,11 @@ class DBFactory
     }
 
     return this.db[serverName];
+  }
+
+  static getInstanceForKey(keyName)
+  {
+    var serverName = KeyDistributor.getServerNameForKey(keyName);       
+    return this.getInstanceByServerName(serverName);
   }
 }
