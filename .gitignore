@@ -6,3 +6,4 @@ webclient/dist/
 webclient.log
 aiserver.log
 experience/
+db/
