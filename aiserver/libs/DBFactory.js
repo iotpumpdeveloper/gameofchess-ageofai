@@ -7,17 +7,12 @@ class DBFactory
 {
   static getInstanceByServerName(serverName)
   {
-    var config = Config.get();
-
     if (this.db == undefined) {
       this.db = {};
     }
 
     if (this.db[serverName] == undefined) {
-      var host = config.servers[serverName].host;
-      var port = config.servers[serverName].port;
-      var dbDir = __dirname + '/../../db/' + serverName;
-      this.db[serverName] = new DB(host, port, dbDir);
+      this.db[serverName] = new DB(serverName);
     }
 
     return this.db[serverName];
@@ -26,12 +21,10 @@ class DBFactory
   static getInstanceForKey(keyName)
   {
     var config = Config.get();
-  
+
     var serverMap = {};
     for (serverName in config.servers) {
-      if (serverName != 's0') {
-        serverMap[serverName] = {weight : 1};
-      } 
+      serverMap[serverName] = {weight : 1};
     }
 
     if (this.keyDistributor == undefined) {

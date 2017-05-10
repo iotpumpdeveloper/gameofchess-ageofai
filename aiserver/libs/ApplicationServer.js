@@ -22,16 +22,13 @@ class ApplicationServer extends WebSocketServer
     this.rootDir = __dirname + '/..';
 
     this.dbFactory = DBFactory;
+
+    this.dbServerPath = new EncryptedPath('db_server', this.serverName);
   }
 
-  //connect to the database on a specific server
-  connectDBOnServer(serverName)
+  getDBServerPath()
   {
-    var dbMessagingPath = new EncryptedPath('db_messaging', serverName).getName();
-    return new WebSocketClient(
-      this.config.servers[serverName], 
-      this.dbMessagingPath
-    ).connect();
+    return this.dbServerPath;
   }
 
   start()
@@ -49,21 +46,20 @@ class ApplicationServer extends WebSocketServer
           context.config = this.config;
           context.rootDir = this.rootDir;
           context.dbFactory = this.dbFactory;
-          context.db = this.db;
           var handler = require(context.rootDir + '/handlers/' + routes[client.path.path]);
           handler(context, client);
         }
     }
 
-    //add db messaging path for this server
-    var dbMessagingPath = new EncryptedPath('db_messaging', this.serverName).getName();
+    //add db server path for this server
+    var path = this.dbServerPath.getName();
 
     this
-      .addPath(dbMessagingPath)
+      .addPath(this.dbServerPath)
       .getDefaultChannel()
-      .onMessage = (message) => { //now there is incoming message on idp of this server
+      .onMessage = (message, client) => { //now there is incoming message on database server path 
         var messageObj = JSON.parse(message);
-        console.log(messageObj);
+        this.dbFactory.getInstanceByServerName(this.serverName).onMessage(message, client);
       }
 
     super.start(); //start the web server
