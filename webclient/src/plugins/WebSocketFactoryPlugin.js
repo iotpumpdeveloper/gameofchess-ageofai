@@ -30,6 +30,10 @@ export default class WebSocketFactoryPlugin
             }
           }
 
+          this._wsMap[path].send = (obj, _messageHandler, _errorHandler) => {
+            this._wsMap[path].sendMessage(JSON.stringify(obj), _messageHandler, _errorHandler); 
+          }
+
           this._wsMap[path].sendMessage = (message, _messageHandler, _errorHandler) => {
             this._wsMap[path]._message = message;
             if (

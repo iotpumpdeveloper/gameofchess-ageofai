@@ -98,10 +98,10 @@ export default class
   {
     var move = SimpleChessAI.getNextBestMove(fen); //we just get the next best move based on the current fen string
     //let ai server record fen, move pair so that it actually "learn"
-    this.$aiws.aimoverecord.sendMessage(JSON.stringify({
+    this.$aiws.aimoverecord.send({
       fen : fen,
       move : move
-    }), (response) => {
+    }, (response) => {
       if (response.data && response.data.success === true) {
         console.log('ai just learned a move for this situation');
       }
@@ -119,7 +119,9 @@ export default class
 
   static doAIMove(resultHandler) {
     var fen = this.game.fen();
-    this.$aiws.aimoveget.sendMessage(fen, (response) => {
+    this.$aiws.aimoveget.send({
+      fen : fen 
+    }, (response) => {
       var _result = response.data;
       if (_result.success) {
         var move = JSON.parse(_result.moveJSON);

@@ -5,8 +5,9 @@
 module.exports = 
 async (context, client) => {
     var querystring = require('querystring');
+    var messageObj = JSON.parse(client.message);
     var fs = require(__dirname + '/../../libs/FileSystem.js');
-    var fen = client.message;
+    var fen = messageObj.fen;
     if (typeof fen == 'string' && fen.length > 0) {
       var fenKey = querystring.escape(fen);
 
