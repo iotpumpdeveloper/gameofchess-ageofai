@@ -13,7 +13,7 @@ module.exports =
       this
         .distributor
         .distribute(client, fenKey)
-        .onSettle( () => {
+        .onSettle( async () => {
           var db = context.db;
           try {
             await db.saveEntry('experience', fenKey, JSON.stringify(move));
@@ -26,7 +26,7 @@ module.exports =
               success : false,
             });
           }
-        }
+        });
     } else {
       client.endJSON({
         success : false

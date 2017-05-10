@@ -13,7 +13,7 @@ async (context, client) => {
       this
         .distributor
         .distribute(client, fenKey)
-        .onSettle( () => {
+        .onSettle( async () => {
           var db = context.db;
           var moveJSON = db.getEntry('experience', fenKey);
           if (moveJSON != undefined) {
@@ -27,7 +27,7 @@ async (context, client) => {
               success : false
             }); 
           }
-        })
+        });
     } else {
       client.endJSON({
         success : false
