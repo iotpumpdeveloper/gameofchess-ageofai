@@ -10,20 +10,23 @@ module.exports =
     if (typeof fen == 'string' && fen.length > 0) {
       var fenKey = querystring.escape(fen);
 
-      
-
-      var db = context.db;
-      try {
-        await db.saveEntry('experience', fenKey, JSON.stringify(move));
-        client.endJSON({
-          success : true,
-        });
-      } catch (err) {
-        console.log(err);
-        client.endJSON({
-          success : false,
-        });
-      }
+      this
+        .distributor
+        .distribute(client, fenKey)
+        .onSettle( () => {
+          var db = context.db;
+          try {
+            await db.saveEntry('experience', fenKey, JSON.stringify(move));
+            client.endJSON({
+              success : true,
+            });
+          } catch (err) {
+            console.log(err);
+            client.endJSON({
+              success : false,
+            });
+          }
+        }
     } else {
       client.endJSON({
         success : false
