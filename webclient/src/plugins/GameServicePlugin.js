@@ -102,7 +102,7 @@ export default class
       fen : fen,
       move : move
     }), (response) => {
-      if (response.data && JSON.parse(response.data).success === true) {
+      if (response.data && response.data.success === true) {
         console.log('ai just learned a move for this situation');
       }
     }); 
@@ -120,7 +120,7 @@ export default class
   static doAIMove(resultHandler) {
     var fen = this.game.fen();
     this.$aiws.aimoveget.sendMessage(fen, (response) => {
-      var _result = JSON.parse(response.data);
+      var _result = response.data;
       if (_result.success) {
         var move = JSON.parse(_result.moveJSON);
         console.log('got move from ai server');
