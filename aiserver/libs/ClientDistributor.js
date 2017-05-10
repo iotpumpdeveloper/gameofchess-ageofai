@@ -23,9 +23,10 @@ module.exports =
       this.onSettleCallback();
     } else {
       var message = await this._forwardClientToServer(client, serverName);
-      client.sendMessage(message);
+      client.send(message);
       client.close(); //close the client after sending the message, maybe we can have a config option later for this?
     }
+    return this;
   }
 
   _forwardClientToServer(client, serverName)
@@ -33,7 +34,7 @@ module.exports =
     return new Promise( (resolve, reject) => {
       var config = Config.get();
       var serverInfo = config.servers[serverName];
-      var _ws = new WebSocketClient(serverInfo, this.upgradeReq.url).connect();
+      var _ws = new WebSocketClient(serverInfo, client.upgradeReq.url).connect();
       _ws.on('open', () => {
         _ws.send(client.message, (err) => {
           if (err) { //message is not sent

@@ -8,6 +8,7 @@ module.exports =
   {
     var config = Config.get();
     this.serverInfo = config.servers[serverName];
+    this.dbDir = __dirname + '/../../db/' + serverName;
     this.storage = {}; //the in-memory storage
   }
 
@@ -23,7 +24,7 @@ module.exports =
 
   getDBDir()
   {
-    return __dirname + '/../../db/' + this.serverName;
+    return this.dbDir;
   }
   
   async saveEntry(setName, entryName, entryValue)

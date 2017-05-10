@@ -6,28 +6,35 @@ module.exports =
 async (context, client) => {
     var querystring = require('querystring');
     var fs = require(__dirname + '/../../libs/FileSystem.js');
-    var fen = context.message;
+    var fen = client.message;
     if (typeof fen == 'string' && fen.length > 0) {
       var fenKey = querystring.escape(fen);
 
-      this
-        .distributor
-        .distribute(client, fenKey)
-        .onSettle( async () => {
-          var db = context.db;
-          var moveJSON = db.getEntry('experience', fenKey);
-          if (moveJSON != undefined) {
-            console.log("reading fenKey " + fenKey + " from memory");
-            client.endJSON({
-              success : true,
-              moveJSON : moveJSON
-            });
-          } else {
-            client.endJSON({
-              success : false
-            }); 
-          }
-        });
+      try {
+        context
+          .distributor
+          .onSettle( async () => {
+            var db = context.db;
+            var moveJSON = db.getEntry('experience', fenKey);
+            if (moveJSON != undefined) {
+              console.log("reading fenKey " + fenKey + " from memory");
+              client.endJSON({
+                success : true,
+                moveJSON : moveJSON
+              });
+            } else {
+              client.endJSON({
+                success : false
+              }); 
+            }
+          })
+          .distribute(client, fenKey)
+      } catch (err) {
+        console.log(err);
+        client.endJSON({
+          success : false
+        }); 
+      }
     } else {
       client.endJSON({
         success : false
