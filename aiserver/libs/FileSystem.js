@@ -38,7 +38,6 @@ module.exports =
   }
 
   static writeFile (fileName, data) {
-    console.log('writing file');
     return new Promise ( (resolve, reject) => {
       require('fs').writeFile(fileName, data, (err) => {
         if (err) {
