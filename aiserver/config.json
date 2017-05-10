@@ -3,16 +3,19 @@
         "s1" : {
             "host" : "127.0.0.1",
             "port" : 3001,
+            "weight" : 1,
             "secretKey" : "16f6fc685a2747abbc91ee59b2427304"
         },
         "s2" : {
             "host" : "127.0.0.1",
             "port" : 3002,
+            "weight" : 1,
             "secretKey" : "c2801f2559434508921822bbc05de746"
         },
         "s3" : {
             "host" : "127.0.0.1",
             "port" : 3003,
+            "weight" : 1,
             "secretKey" : "11e3b43552a746eeae23adef5010db67"
         }
     },

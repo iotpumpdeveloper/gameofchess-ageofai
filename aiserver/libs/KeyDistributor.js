@@ -5,12 +5,15 @@ const md5 = require('md5');
 module.exports = 
   class KeyDistributor
 {
-  constructor(serverMap)
+  constructor()
   {
-    this.serverMap = serverMap;
+    var config = Config.get();
     this.virtualServerNames = [];
-    for (var serverName in this.serverMap) {
-      for (var i = 1; i <= this.serverMap[serverName].weight; i++) {
+    for (var serverName in config.servers) {
+      if (config.servers[serverName].weight == undefined) { //if weight is not defined, default to 1
+        config.servers[serverName].weight = 1;
+      }
+      for (var i = 1; i <= config.servers[serverName].weight; i++) {
         this.virtualServerNames.push(serverName);
       }
     }

@@ -21,9 +21,7 @@ class ApplicationServer extends WebSocketServer
     //the root directory
     this.rootDir = __dirname + '/..';
 
-    this.dbFactory = DBFactory;
-
-    this.dbServerPath = new EncryptedPath('db_server', this.serverName);
+    this.db = new DB(this.serverName);
   }
 
   getDBServerPath()
@@ -45,7 +43,9 @@ class ApplicationServer extends WebSocketServer
           context.client = client;
           context.config = this.config;
           context.rootDir = this.rootDir;
-          context.dbFactory = this.dbFactory;
+          context.distributor = new KeyDistributor();
+          context.serverName = this.serverName;
+          context.db = this.db;
           var handler = require(context.rootDir + '/handlers/' + routes[client.path.path]);
           handler(context, client);
         }
