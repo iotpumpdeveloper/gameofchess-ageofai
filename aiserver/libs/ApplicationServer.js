@@ -2,8 +2,7 @@ const WebSocketServer = require('./WebSocketServer');
 const WebSocketClient = require('./WebSocketClient');
 const Path = require('./Path');
 const Config = require('./Config');
-const EncryptedPath = require('./EncryptedPath');
-const DBFactory = require('./DBFactory');
+const ClientDistributor = require('./ClientDistributor');
 
 module.exports = 
 class ApplicationServer extends WebSocketServer
@@ -15,12 +14,14 @@ class ApplicationServer extends WebSocketServer
     super(config.servers[serverName]);
 
     this.config = config;
+    this.config.currentServerName = serverName; //very important, we use this to identify the current server's name
 
     this.serverName = serverName;
 
     //the root directory
     this.rootDir = __dirname + '/..';
 
+    this.distributor = new ClientDistributor();
     this.db = new DB(this.serverName);
   }
 
@@ -37,30 +38,17 @@ class ApplicationServer extends WebSocketServer
       this
         .addPath(path)
         .getDefaultChannel()
-        .onMessage = (message, client) => {
+        .onMessage = (client) => {
           var context = {};
-          context.message = message;
-          context.client = client;
           context.config = this.config;
           context.rootDir = this.rootDir;
-          context.distributor = new KeyDistributor();
+          context.distributor = this.distributor;
           context.serverName = this.serverName;
           context.db = this.db;
           var handler = require(context.rootDir + '/handlers/' + routes[client.path.path]);
           handler(context, client);
         }
     }
-
-    //add db server path for this server
-    var path = this.dbServerPath.getName();
-
-    this
-      .addPath(this.dbServerPath)
-      .getDefaultChannel()
-      .onMessage = (message, client) => { //now there is incoming message on database server path 
-        var messageObj = JSON.parse(message);
-        this.dbFactory.getInstanceByServerName(this.serverName).onMessage(message, client);
-      }
 
     super.start(); //start the web server
   }

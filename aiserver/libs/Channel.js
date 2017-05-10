@@ -8,7 +8,7 @@ class Channel
   {
     this.name = name;
     this.clients = {};
-    this.onMessage = (message, client) => {};
+    this.onMessage = (client) => {};
   }
 
   addClient(client)
@@ -17,7 +17,8 @@ class Channel
   
     //hook up the client's message event 
     var messageHandler = (message) => {
-      this.onMessage(message, client);
+      client.message = message; //very important, bind the incoming message to the client
+      this.onMessage(client);
     }
 
     client.on('message', messageHandler); 
