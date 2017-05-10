@@ -3,7 +3,6 @@ webclient/webclient.log
 node_modules/
 npm-debug.log
 webclient/dist/
-webclient.log
-aiserver.log
+*.log
 experience/
 db/
