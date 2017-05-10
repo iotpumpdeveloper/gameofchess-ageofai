@@ -17,7 +17,7 @@ async (context, client) => {
             var db = context.db;
             var moveJSON = db.getEntry('experience', fenKey);
             if (moveJSON != undefined) {
-              console.log("reading fenKey " + fenKey + " from memory");
+              console.log("reading fenKey " + fenKey + " from memory on server " + context.config.currentServerName);
               client.endJSON({
                 success : true,
                 moveJSON : moveJSON

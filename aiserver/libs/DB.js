@@ -7,6 +7,7 @@ module.exports =
   constructor(serverName)
   {
     var config = Config.get();
+    this.serverName = serverName;
     this.serverInfo = config.servers[serverName];
     this.dbDir = __dirname + '/../../db/' + serverName;
     this.storage = {}; //the in-memory storage
@@ -36,6 +37,7 @@ module.exports =
     var entryPath = this.dbDir + '/' + setName + '/' + entryName;
     await fs.writeFile(entryPath, entryValue); //save entry to disk 
     this.storage[setName][entryName] = entryValue;  //save entry to in-memory stroage
+    console.log("successfully saved " + entryName + " on server " + this.serverName);
   }
 
   getEntry(setName, entryName)
