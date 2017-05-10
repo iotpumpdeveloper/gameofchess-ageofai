@@ -53,7 +53,7 @@ module.exports =
   onSettle(callback)
   {
     this.onSettleCallback = callback;
-    result this;
+    return this;
   }
 
 }

@@ -3,6 +3,7 @@ const WebSocketClient = require('./WebSocketClient');
 const Path = require('./Path');
 const Config = require('./Config');
 const ClientDistributor = require('./ClientDistributor');
+const DB = require('./DB');
 
 module.exports = 
 class ApplicationServer extends WebSocketServer
