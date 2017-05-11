@@ -25,4 +25,9 @@ module.exports=
     var value = querystring.escape(key);
     return value;
   }
+
+  static trim(key) {
+    var value = key.trim();
+    return value;
+  }
 }
