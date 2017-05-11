@@ -15,8 +15,21 @@ module.exports =
     this.KeyDistributor = new KeyDistributor();
   }
 
+  /**
+   * this is called if the client forwarding is settled
+   */
+  onSettle(callback)
+  {
+    this.onSettleCallback = callback;
+    return this;
+  }
+
   async distribute(client, key)
   {
+    if ( (typeof key != 'string') || ! (key.length > 0) ) { //we have an invalid key, just settle the distribution
+      this.onSettleCallback(); 
+      return;
+    }
     var config = Config.get();
     var serverName = this.KeyDistributor.getServerNameForKey(key);
     if (serverName == config.currentServerName) { //this client is settled on the current server
@@ -26,7 +39,6 @@ module.exports =
       client.send(message);
       client.close(); //close the client after sending the message, maybe we can have a config option later for this?
     }
-    return this;
   }
 
   _forwardClientToServer(client, serverName)
@@ -47,14 +59,4 @@ module.exports =
       });
     });
   }
-
-  /**
-   * this is called if the client forwarding is settled
-   */
-  onSettle(callback)
-  {
-    this.onSettleCallback = callback;
-    return this;
-  }
-
 }
