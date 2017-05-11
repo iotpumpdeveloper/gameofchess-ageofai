@@ -96,21 +96,8 @@ export default class
 
   static _doInBrowserAIMove(fen, resultHandler)
   {
-    //var move = SimpleChessAI.getNextBestMove(fen); //we just get the next best move based on the current fen string
-    //let ai server record fen, move pair so that it actually "learn"
-    /*
-    this.$aiws.aimoverecord.send({
-      fen : fen,
-      move : move
-    }, (response) => {
-      if (response.data && response.data.success === true) {
-        console.log('ai just learned a move for this situation');
-      }
-    }); 
-    */
     var chessAIWorker = new Worker('/dist/SimpleChessAIWorker.js');
     chessAIWorker.addEventListener('message', (e) => {
-      console.log(e.data);
       var move = JSON.parse(e.data);
       this.game.ugly_move(move);  
       var result = {
@@ -120,6 +107,16 @@ export default class
         turn : this.game.turn(),
         in_check : this.game.in_check(),
       };
+
+      //let ai server record fen, move pair so that it actually "learn"
+      this.$aiws.aimoverecord.send({
+        fen : fen,
+        move : move
+      }, (response) => {
+        if (response.data && response.data.success === true) {
+          console.log('ai just learned a move for this situation');
+        }
+      }); 
       resultHandler(result);
     }, false);
     chessAIWorker.postMessage(fen);
@@ -127,8 +124,6 @@ export default class
 
   static doAIMove(resultHandler) {
     var fen = this.game.fen();
-    this._doInBrowserAIMove(fen, resultHandler)
-    /*
     this.$aiws.aimoveget.send({
       fen : fen 
     }, (response) => {
@@ -148,13 +143,12 @@ export default class
         resultHandler(result);
       } else { //no valid move from ai server, fall back to in-browser ai 
         console.log('fall back to in-browser ai move');
-        resultHandler(this._doInBrowserAIMove(fen));
+        this._doInBrowserAIMove(fen, resultHandler)
       }
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error.message);
       resultHandler(this._doInBrowserAIMove(fen));
     }); 
-    */
 
   }
 
