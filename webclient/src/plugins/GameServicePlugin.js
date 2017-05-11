@@ -107,7 +107,7 @@ export default class
         in_check : this.game.in_check(),
       };
 
-      //let ai server record fen, move pair so that it actually "learn"
+      //let ai server record {fen, move} pair so that it actually "learn"
       this.$aiws.aimoverecord.send({
         fen : fen,
         move : move
