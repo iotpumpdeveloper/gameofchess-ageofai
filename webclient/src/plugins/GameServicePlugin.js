@@ -96,7 +96,7 @@ export default class
 
   static _doInBrowserAIMove(fen, resultHandler)
   {
-    var move = SimpleChessAI.getNextBestMove(fen); //we just get the next best move based on the current fen string
+    //var move = SimpleChessAI.getNextBestMove(fen); //we just get the next best move based on the current fen string
     //let ai server record fen, move pair so that it actually "learn"
     /*
     this.$aiws.aimoverecord.send({
@@ -110,6 +110,7 @@ export default class
     */
     var chessAIWorker = new Worker('/dist/SimpleChessAIWorker.js');
     chessAIWorker.addEventListener('message', (e) => {
+      console.log(e.data);
       var move = JSON.parse(e.data);
       this.game.ugly_move(move);  
       var result = {
@@ -119,7 +120,6 @@ export default class
         turn : this.game.turn(),
         in_check : this.game.in_check(),
       };
-      console.log("got a move from worker");
       resultHandler(result);
     }, false);
     chessAIWorker.postMessage(fen);
