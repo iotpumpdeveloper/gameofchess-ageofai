@@ -40,11 +40,21 @@ module.exports =
     console.log("successfully saved " + entryName + " on server " + this.serverName);
   }
 
-  getEntry(setName, entryName)
+  async getEntry(setName, entryName)
   {
     var result;
     if (this.storage[setName] != undefined && this.storage[setName][entryName] != undefined ) {
+      console.log("reading entry " + entryName + " from memory");
       result = this.storage[setName][entryName];
+    } else { //entry does not exist in memory, try reading it from disk
+      var entryPath = this.dbDir + '/' + setName + '/' + entryName;
+      var entryValue = await fs.readFile(entryPath);
+      console.log("reading entry " + entryName + " from disk");
+      if (this.storage[setName] == undefined) {
+        this.storage[setName] = {};
+      }
+      this.storage[setName][entryName] = entryValue;
+      result = entryValue;
     }
     return result;
   }
