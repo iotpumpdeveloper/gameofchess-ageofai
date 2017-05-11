@@ -4,7 +4,6 @@ if (args.length < 3) {
   console.log("Missing server name");
   console.log("example: node server.js s1");
   console.log("example: node server.js s2");
-  console.log("example: node server.js s3");
   process.exit();
 }
 
