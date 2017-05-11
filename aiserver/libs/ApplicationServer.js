@@ -47,13 +47,26 @@ class ApplicationServer extends WebSocketServer
           context.distributor = this.distributor;
           context.serverName = this.serverName;
           context.db = this.db;
-          client.data = JSON.parse(client.message); //we assume the client will always send a valid json
          
           //we are going to do all the complex key distribution logic here, so let each handler function focus on a specific server
           try {
-            var distribution_key_data_field = routes[client.path.path].distribution_key_data_field;
+
+            if (typeof client.message != 'string') {
+              throw new Error('Invalid incoming message, expect to be a string');
+            }
+
+            if (client.message.trim().length == 0) {
+              throw new Error('Invalid incoming message, expect to be JSON');
+            }
+            
+            client.data = JSON.parse(client.message); //we assume the client will always send a valid json
+
+            if (typeof client.data != 'object') {
+              throw new Error('Invalid incoming data, expected to be JSON');
+            }
 
             //make sure the client's distribution_key_data_field is valid
+            var distribution_key_data_field = routes[client.path.path].distribution_key_data_field;
             if ( client.data[distribution_key_data_field] == undefined ) {
               throw new Error('Expecting key ' + distribution_key_data_field + ' in incoming message data');
             }
