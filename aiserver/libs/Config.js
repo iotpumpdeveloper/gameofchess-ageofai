@@ -15,4 +15,10 @@ class Config
   {
     return this.config;
   }
+
+  //set another config
+  static set(config)
+  {
+    this.config = config;
+  }
 }

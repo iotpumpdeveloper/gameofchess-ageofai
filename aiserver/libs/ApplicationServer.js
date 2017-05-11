@@ -11,30 +11,29 @@ class ApplicationServer extends WebSocketServer
 {
   constructor(serverName)
   {
+    //things that do not need to hot reload goes here
     var config = Config.get();
-   
     super(config.servers[serverName]);
-
-    this.config = config;
-    this.config.currentServerName = serverName; //very important, we use this to identify the current server's name
-
     this.serverName = serverName;
-
+    this.db = new DB(this.serverName);
     //the root directory
     this.rootDir = __dirname + '/..';
-
-    this.distributor = new ClientDistributor();
-    this.db = new DB(this.serverName);
   }
 
-  getDBServerPath()
+  /**
+   * things that need to be hot reload goes here
+   */
+  hotReload()
   {
-    return this.dbServerPath;
-  }
-
-  start()
-  {
+    this.config = Config.get();
+    this.config.currentServerName = this.serverName; //very important, we use this to identify the current server's name
+    this.distributor = new ClientDistributor(); //very important, we need to hot reload the client distributor
+   
+    //now we need to hot reload all the routes 
     //map application routes
+    
+    //first of all, clear all the existing paths 
+    this.clearAllPaths();
     var routes = this.config.routes;
     for (var path in this.config.routes) {
       this
@@ -47,7 +46,7 @@ class ApplicationServer extends WebSocketServer
           context.distributor = this.distributor;
           context.serverName = this.serverName;
           context.db = this.db;
-         
+
           //we are going to do all the complex key distribution logic here, so let each handler function focus on a specific server
           try {
 
@@ -58,7 +57,7 @@ class ApplicationServer extends WebSocketServer
             if (client.message.trim().length == 0) {
               throw new Error('Invalid incoming message, expect to be JSON');
             }
-            
+
             client.data = JSON.parse(client.message); //we assume the client will always send a valid json
 
             if (typeof client.data != 'object') {
@@ -97,9 +96,14 @@ class ApplicationServer extends WebSocketServer
               success : false
             }); 
           }
-
         }
     }
+
+  }
+
+  start()
+  {
+    this.hotReload();
 
     super.start(); //start the web server
   }

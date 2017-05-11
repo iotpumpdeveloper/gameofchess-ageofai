@@ -31,6 +31,18 @@ class WebSocketServer
     return this.paths[path];
   }
 
+  //clear all the paths
+  clearAllPaths()
+  {
+    this.paths = {}; 
+  }
+
+  //get all paths 
+  getAllPaths()
+  {
+    return this.paths;
+  }
+
   /**
    * start the server
    */
@@ -43,6 +55,8 @@ class WebSocketServer
     });
 
     this._serverInstance.on('connection', (client) => {
+      //look up existing paths 
+      this.paths = this.getAllPaths();
       var path = client.upgradeReq.url;
       if (path in this.paths && client.readyState == client.OPEN) {
         this.paths[path].addConnectedClient(WebSocketClient.bindToWebSocket(client));
