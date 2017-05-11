@@ -46,6 +46,7 @@ class ApplicationServer extends WebSocketServer
           context.distributor = this.distributor;
           context.serverName = this.serverName;
           context.db = this.db;
+          client.data = JSON.parse(client.message); //we assume the client will always send a valid json
           var handler = require(context.rootDir + '/handlers/' + routes[client.path.path]);
           handler(context, client);
         }
