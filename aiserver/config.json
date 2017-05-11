@@ -14,7 +14,15 @@
         }
     },
     "routes" : {
-        "/ws/ai/move/get" : "ws/ai_move_get.js",
-        "/ws/ai/move/record" : "ws/ai_move_record.js"
+        "/ws/ai/move/get" : {
+            "handler" : "ws/ai_move_get.js",
+            "distribution_key_data_field" : "fen",
+            "distribution_key_algorithm" : "querystring_escape" 
+        },
+        "/ws/ai/move/record" : {
+            "handler" : "ws/ai_move_record.js",
+            "distribution_key_data_field" : "fen",
+            "distribution_key_algorithm" : "querystring_escape" 
+        }
     }
 }

@@ -141,7 +141,7 @@ export default class
         resultHandler(this._doInBrowserAIMove(fen));
       }
     }, (error) => { //on error, we fall back to in-browser ai
-      console.log(error);
+      console.log(error.message);
       resultHandler(this._doInBrowserAIMove(fen));
     }); 
 
