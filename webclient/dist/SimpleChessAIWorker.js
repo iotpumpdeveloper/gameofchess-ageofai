@@ -1,5 +1,13 @@
-self.importScripts('./chess.min.js');
-self.importScripts('./SimpleChessAI.min.js');
+/**
+ * define some functions and variable to allow isomorphic javascript
+ */
+const require = (scriptName) => {
+  self.importScripts(scriptName);
+}
+
+var module = {};
+
+require('./SimpleChessAI.js');
 self.addEventListener('message', (e) => {
   var fen = e.data;
   var move = self.getNextBestMove(fen);

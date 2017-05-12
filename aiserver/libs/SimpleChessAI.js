@@ -281,5 +281,5 @@ var getNextBestMove = function(fen) {
 }
 
 module.exports = {
-  getNextBestMove
+  getNextBestMove : getNextBestMove
 }

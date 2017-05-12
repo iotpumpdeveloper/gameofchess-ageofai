@@ -2,16 +2,21 @@
  * modified from : 
  * https://medium.freecodecamp.com/simple-chess-ai-step-by-step-1d55a9266977
  */
-//var c = require('./chess.js');
+var c = require('./chess.js');
+
 /**
  * since this is an isomorphic library, need to deal with backend and frontend difference on requiring
  */
-/*var Chess;*/
-/*if (typeof c.Chess === 'function') {*/
-/*Chess = c.Chess;*/
-/*} else if (typeof c === 'function') {*/
-/*Chess = c;*/
-/*}*/
+var Chess;
+if (c !== undefined) { //for web worker, it is undefined
+  if (typeof c.Chess === 'function') {
+    Chess = c.Chess;
+  } else if (typeof c === 'function') {
+    Chess = c;
+  }
+} else {
+  Chess = self.Chess; //for web worker, we can use self
+}
 
 var colorMap = {
   'black' : 'b',
@@ -277,4 +282,8 @@ var getNextBestMove = function(fen) {
   game.load(fen);
   setAIColor(game.turn());
   return minimaxRoot(3, game, true);
+}
+
+module.exports = {
+  getNextBestMove : getNextBestMove
 }
