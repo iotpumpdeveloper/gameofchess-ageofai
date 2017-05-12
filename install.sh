@@ -1,4 +1,3 @@
-npm install
 cd webclient
 npm install
 cd ..
