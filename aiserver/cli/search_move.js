@@ -1,4 +1,3 @@
-var Chess = require(__dirname + '/../../isomorphic/libs/chess.js').Chess;
 var SimpleChessAI = require(__dirname + '/../../isomorphic/libs/SimpleChessAI.js'); 
 
 var args = process.argv;
