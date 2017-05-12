@@ -97,6 +97,7 @@ export default class
   {
     var chessAIWorker = new Worker('/dist/SimpleChessAIWorker.js');
     chessAIWorker.addEventListener('message', (e) => {
+      console.log(fen + "=>" + e.data);
       var move = JSON.parse(e.data);
       this.game.ugly_move(move);  
       var result = {
