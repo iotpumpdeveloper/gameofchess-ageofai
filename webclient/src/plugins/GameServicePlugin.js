@@ -4,7 +4,7 @@
  */
 import sha1 from 'sha1';
 import Storage from '../libs/Storage.js';
-import Chess from '../../../isomorphic/libs/chess.js';
+import Chess from '../libs/chess.js';
 
 export default class 
 {

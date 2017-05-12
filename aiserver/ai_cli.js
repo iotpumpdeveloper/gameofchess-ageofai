@@ -1,5 +1,5 @@
-var Chess = require(__dirname + '/../isomorphic/libs/chess.js').Chess;
-var SimpleChessAI = require(__dirname + '/../isomorphic/libs/SimpleChessAI.js'); 
+var Chess = require(__dirname + '/libs/chess.js').Chess;
+var SimpleChessAI = require(__dirname + '/libs/SimpleChessAI.js'); 
 var querystring = require("querystring");
 var fs = require('fs');
 var experienceDBDir = __dirname + '/../experience';

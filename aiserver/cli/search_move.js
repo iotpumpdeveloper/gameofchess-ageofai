@@ -1,4 +1,4 @@
-var SimpleChessAI = require(__dirname + '/../../isomorphic/libs/SimpleChessAI.js'); 
+var SimpleChessAI = require(__dirname + '/../libs/SimpleChessAI.js'); 
 
 var args = process.argv;
 var fen = args[2].trim();
