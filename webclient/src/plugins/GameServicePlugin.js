@@ -106,6 +106,8 @@ export default class
         turn : this.game.turn(),
         in_check : this.game.in_check(),
       };
+      console.log("got a move from in-browser ai worker");
+      resultHandler(result);
 
       //let ai server record {fen, move} pair so that it actually "learn"
       this.$aiws.aimoverecord.send({
@@ -116,7 +118,6 @@ export default class
           console.log('ai just learned a move for this situation');
         }
       }); 
-      resultHandler(result);
     }, false);
     chessAIWorker.postMessage(fen);
   }
@@ -146,7 +147,7 @@ export default class
       }
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error.message);
-      resultHandler(this._doInBrowserAIMove(fen));
+      this._doInBrowserAIMove(fen, resultHandler)
     }); 
 
   }
