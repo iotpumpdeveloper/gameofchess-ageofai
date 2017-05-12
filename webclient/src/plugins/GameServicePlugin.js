@@ -95,32 +95,35 @@ export default class
 
   static _doInBrowserAIMove(fen, resultHandler)
   {
-    var chessAIWorker = new Worker('/dist/SimpleChessAIWorker.js');
-    chessAIWorker.addEventListener('message', (e) => {
-      console.log(fen + "=>" + e.data);
-      var move = JSON.parse(e.data);
-      this.game.ugly_move(move);  
-      var result = {
-        fen : this.game.fen(),
-        pgn : this.game.pgn(),
-        moves : this.game.moves(),
-        turn : this.game.turn(),
-        in_check : this.game.in_check(),
-      };
-      console.log("got a move from in-browser ai worker");
-      resultHandler(result);
+    //initiate the chess ai worker only once
+    if (this.chessAIWorker == undefined) {
+      this.chessAIWorker = new Worker('/dist/SimpleChessAIWorker.js');
+      this.chessAIWorker.addEventListener('message', (e) => {
+        console.log(fen + "=>" + e.data);
+        var move = JSON.parse(e.data);
+        this.game.ugly_move(move);  
+        var result = {
+          fen : this.game.fen(),
+          pgn : this.game.pgn(),
+          moves : this.game.moves(),
+          turn : this.game.turn(),
+          in_check : this.game.in_check(),
+        };
+        console.log("got a move from in-browser ai worker");
+        resultHandler(result);
 
-      //let ai server record {fen, move} pair so that it actually "learn"
-      this.$aiws.aimoverecord.send({
-        fen : fen,
-        move : move
-      }, (response) => {
-        if (response.data && response.data.success === true) {
-          console.log('ai just learned a move for this situation');
-        }
-      }); 
-    }, false);
-    chessAIWorker.postMessage(fen);
+        //let ai server record {fen, move} pair so that it actually "learn"
+        this.$aiws.aimoverecord.send({
+          fen : fen,
+          move : move
+        }, (response) => {
+          if (response.data && response.data.success === true) {
+            console.log('ai just learned a move for this situation');
+          }
+        }); 
+      }, false);
+    }
+    this.chessAIWorker.postMessage(fen);
   }
 
   static doAIMove(resultHandler) {

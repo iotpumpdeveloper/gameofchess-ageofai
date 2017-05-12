@@ -3,7 +3,6 @@
  * https://medium.freecodecamp.com/simple-chess-ai-step-by-step-1d55a9266977
  */
 //var c = require('./chess.js');
-importScripts('./chess.js');
 /**
  * since this is an isomorphic library, need to deal with backend and frontend difference on requiring
  */

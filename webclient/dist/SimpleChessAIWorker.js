@@ -1,3 +1,4 @@
+self.importScripts('./chess.js');
 self.importScripts('./SimpleChessAI.js');
 self.addEventListener('message', (e) => {
   var fen = e.data;
