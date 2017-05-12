@@ -1,8 +1,14 @@
 /**
  * define some functions and variable to allow isomorphic javascript
  */
+
+var scriptMap = {
+  './chess.js' : './chess.min.js',
+  './SimpleChessAI.js' : './SimpleChessAI.min.js',
+}
+
 const require = (scriptName) => {
-  self.importScripts(scriptName);
+  self.importScripts(scriptMap[scriptName]);
 }
 
 var module = {};
