@@ -8,12 +8,16 @@ var c = require('./chess.js');
  * since this is an isomorphic library, need to deal with backend and frontend difference on requiring
  */
 var Chess;
-if (typeof c.Chess === 'function') {
-  Chess = c.Chess;
-} else if (typeof c === 'function') {
-  Chess = c;
+if (c !== undefined) { //for web worker, it is undefined
+  if (typeof c.Chess === 'function') {
+    Chess = c.Chess;
+  } else if (typeof c === 'function') {
+    Chess = c;
+  }
+} else {
+  Chess = self.Chess; //for web worker, we can use self
 }
-
+/**/
 var colorMap = {
   'black' : 'b',
   'white' : 'w',
