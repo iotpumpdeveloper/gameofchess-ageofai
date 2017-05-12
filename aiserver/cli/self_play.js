@@ -1,8 +1,8 @@
-var Chess = require(__dirname + '/libs/chess.js').Chess;
-var SimpleChessAI = require(__dirname + '/libs/SimpleChessAI.js'); 
+var Chess = require(__dirname + '/../libs/chess.js').Chess;
+var SimpleChessAI = require(__dirname + '/../libs/SimpleChessAI.js'); 
 var querystring = require("querystring");
 var fs = require('fs');
-var experienceDBDir = __dirname + '/../experience';
+var experienceDBDir = __dirname + '/../../experience';
 
 var SQUARES = {
   a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
