@@ -1,6 +1,13 @@
 Game of Chess : Age of AI
 ============================
-An AI based chess game
+An AI based chess game built on top of Node.js and Vue.js
+
+## Feature:
+- Pure frontend player v.s AI using HTML5 webworker if no backend servers are connected
+- Code written using async, await and promise
+- Store AI-chosen moves to backend web servers though websocket
+- Backend can scale to arbitary number of servers, similar to redis cluster
+- Backend has ability to let AI perform self-play itself, thus keep "learning" on the best moves
 
 
 ## Running the Game
