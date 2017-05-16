@@ -22,6 +22,7 @@ try {
     var key = fenKeys[i];
     var serverName = kd.getServerNameForKey(key);
     expect(serverName).to.be.a('string');
+    expect(serverName).to.match(/s[0-9]+/);
   }
 } catch (err) {
   console.log(err.message);
