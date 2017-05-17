@@ -1,5 +1,5 @@
 const Config = require('./Config');
-const CRC32 = require('CRC-32');
+const CRC32 = require('crc-32');
 const md5 = require('md5');
 
 module.exports = 
