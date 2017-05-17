@@ -25,6 +25,7 @@ try {
     expect(response.success).to.be.true;
     var move = JSON.parse(response.moveJSON);
     expect(move).to.have.ownProperty('color');
+    expect(move.color).to.equal('b');
     expect(move).to.have.ownProperty('from');
     expect(move).to.have.ownProperty('to');
   });
