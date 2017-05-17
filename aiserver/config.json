@@ -17,12 +17,14 @@
         "/ws/ai/move/get" : {
             "handler" : "ws/ai_move_get.js",
             "distribution_key_data_field" : "fen",
-            "distribution_key_algorithm" : "querystring_escape" 
+            "distribution_key_algorithm" : "querystring_escape",
+            "keep_open" : false
         },
         "/ws/ai/move/record" : {
             "handler" : "ws/ai_move_record.js",
             "distribution_key_data_field" : "fen",
-            "distribution_key_algorithm" : "querystring_escape" 
+            "distribution_key_algorithm" : "querystring_escape",
+            "keep_open" : false
         }
     }
 }

@@ -3,19 +3,19 @@
  */
 
 module.exports = 
-  async (context, client) => {
-    var fenKey = client.dk;
+  async (context) => {
+    var fenKey = context.client.dk;
     var db = context.db;
     var moveJSON = await db.getEntry('experience', fenKey);
     if (moveJSON != undefined) {
       console.log("reading fenKey " + fenKey + " from server " + context.config.currentServerName);
-      client.endJSON({
+      return {
         success : true,
         moveJSON : moveJSON
-      });
+      };
     } else {
-      client.endJSON({
+      return {
         success : false
-      }); 
+      }; 
     }
   }

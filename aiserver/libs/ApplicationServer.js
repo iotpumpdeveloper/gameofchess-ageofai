@@ -47,10 +47,16 @@ class ApplicationServer extends WebSocketServer
           context.serverName = this.serverName;
           context.db = this.db;
 
+          //now on the client's behavior on this route 
+
+          if ( routes[client.path.path].keep_open == undefined ) {
+            routes[client.path.path].keep_open = false; //default behavior is websocket will be closed immediately
+          }
+
           //we are going to do all the complex key distribution logic here, so let each handler function focus on a specific server
           try {
 
-            if (typeof client.message != 'string') {
+            if (typeof client.message !== 'string') {
               throw new Error('Invalid incoming message, expect to be a string');
             }
 
@@ -60,7 +66,7 @@ class ApplicationServer extends WebSocketServer
 
             client.data = JSON.parse(client.message); //we assume the client will always send a valid json
 
-            if (typeof client.data != 'object') {
+            if (typeof client.data !== 'object') {
               throw new Error('Invalid incoming data, expected to be JSON');
             }
 
@@ -79,22 +85,47 @@ class ApplicationServer extends WebSocketServer
             }
 
             var distribution_key_algorithm = routes[client.path.path].distribution_key_algorithm;
-            var distribution_key = KeyEncyptionAlgorithm[distribution_key_algorithm](client.data[distribution_key_data_field]);
-
+            var distribution_key = KeyEncyptionAlgorithm[distribution_key_algorithm](client.data[distribution_key_data_field]);            
 
             context
               .distributor
               .onSettle( async () => {
                 var handler = require(context.rootDir + '/handlers/' + routes[client.path.path].handler);
                 client.dk = distribution_key;
-                handler(context, client);
+
+                //now bind the client to the context
+                context.client = client;
+
+                context.response = await handler(context); //wait for the response
+
+                if (context.response !== undefined) {
+                  if (routes[client.path.path].keep_open  === false) {
+                    client.endJSON(context.response);
+                  } else {
+                    client.sendJSON(context.response); //we just send the json response and do not close the websocket
+                  }
+                } else { //if context has no response, we still default it to success false 
+                  context.resonse = {
+                    success : false
+                  }
+                  if (routes[client.path.path].keep_open  === false) {
+                    client.endJSON(context.response);
+                  } else {
+                    client.sendJSON(context.response); //we just send the json response and do not close the websocket
+                  }
+                }
               })
               .distribute(client, distribution_key);
           } catch (err) {
             console.log(err);
-            client.endJSON({
+            context.resonse = {
               success : false
-            }); 
+            }
+            if (routes[client.path.path].keep_open  === false) {
+              client.endJSON(context.response);
+            } else {
+              client.sendJSON(context.response); //we just send the json response and do not close the websocket
+            }
           }
         }
     }
