@@ -46,6 +46,7 @@ module.exports =
     return new Promise( (resolve, reject) => {
       var config = Config.get();
       var serverInfo = config.servers[serverName];
+      //initiate a forwarding websocket
       var _ws = new WebSocketClient(serverInfo, client.upgradeReq.url).connect();
       _ws.on('open', () => {
         _ws.send(client.message, (err) => {
@@ -56,6 +57,8 @@ module.exports =
       });
       _ws.on('message', (msg) => {
         resolve(msg); 
+        //now close the websocket 
+        _ws.close();
       });
     });
   }
