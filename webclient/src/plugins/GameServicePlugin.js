@@ -148,12 +148,11 @@ export default class
           resultHandler(result);
         } catch (err) { //anything bad happens here we still fallback to in-browser ai move 
           console.log('invalid move generated from ai server, falling back to in-browser ai move');
-          this.game.undo();
           this._doInBrowserAIMove(this.game.fen(), resultHandler)
         }
       } else { //no valid move from ai server, fall back to in-browser ai 
         console.log('fall back to in-browser ai move');
-        this._doInBrowserAIMove(fen, resultHandler)
+        this._doInBrowserAIMove(this.game.fen(), resultHandler)
       }
     }, (error) => { //on error, we fall back to in-browser ai
       console.log(error.message);
