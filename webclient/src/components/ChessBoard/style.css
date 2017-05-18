@@ -1,3 +1,7 @@
+[v-cloak] {
+  display: none;
+}
+
 div#chessboard {
   margin-top: 20px;
 }
@@ -15,7 +19,7 @@ div.playerbar {
   margin-top: 10px;
   font-weight: bold;
   font-size: 12px;
-}
+} 
 
 /*!
  * chessboard.js $version$
