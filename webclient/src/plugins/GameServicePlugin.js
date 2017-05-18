@@ -100,6 +100,8 @@ export default class
       this.chessAIWorker = new Worker('/dist/SimpleChessAIWorker.js');
       this.chessAIWorker.addEventListener('message', (e) => {
         var move = JSON.parse(e.data);
+        console.log("got a move from in-browser ai worker");
+        console.log(move);
         this.game.ugly_move(move);  
         var result = {
           fen : this.game.fen(),
@@ -108,7 +110,6 @@ export default class
           turn : this.game.turn(),
           in_check : this.game.in_check(),
         };
-        console.log("got a move from in-browser ai worker");
         resultHandler(result);
 
         //let ai server record {fen, move} pair so that it actually "learn"
