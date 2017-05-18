@@ -37,7 +37,6 @@ module.exports =
     } else {
       var message = await this._forwardClientToServer(client, serverName);
       client.send(message);
-      client.close(); //close the client after sending the message, maybe we can have a config option later for this?
     }
   }
 
