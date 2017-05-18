@@ -123,7 +123,8 @@ export default class
             }
           }); 
         } catch (err) {
-          this.game.undo();
+	  console.log('invalid move from in-browser ai worker');
+	  console.log(move);
           var result = {
             fen : this.game.fen(),
             pgn : this.game.pgn(),
@@ -132,7 +133,7 @@ export default class
             in_check : this.game.in_check(),
           };
           resultHandler(result);
-          //this.chessAIWorker.postMessage(this.game.fen());
+          this.chessAIWorker.postMessage(this.game.fen());
         }
       }, false);
     }
