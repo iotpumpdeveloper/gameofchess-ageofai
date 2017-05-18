@@ -132,18 +132,23 @@ export default class
     }, (response) => {
       var _result = response.data;
       if (_result.success) {
-        var move = JSON.parse(_result.moveJSON);
-        console.log('got move from ai server');
-        console.log(move);
-        this.game.ugly_move(move);
-        var result = {
-          fen : this.game.fen(),
-          pgn : this.game.pgn(),
-          moves : this.game.moves(),
-          turn : this.game.turn(),
-          in_check : this.game.in_check(),
-        };
-        resultHandler(result);
+        try {
+          var move = JSON.parse(_result.moveJSON);
+          console.log('got move from ai server');
+          console.log(move);
+          this.game.ugly_move(move);
+          var result = {
+            fen : this.game.fen(),
+            pgn : this.game.pgn(),
+            moves : this.game.moves(),
+            turn : this.game.turn(),
+            in_check : this.game.in_check(),
+          };
+          resultHandler(result);
+        } catch (err) { //anything bad happens here we still fallback to in-browser ai move 
+          console.log('fall back to in-browser ai move');
+          this._doInBrowserAIMove(fen, resultHandler)
+        }
       } else { //no valid move from ai server, fall back to in-browser ai 
         console.log('fall back to in-browser ai move');
         this._doInBrowserAIMove(fen, resultHandler)
