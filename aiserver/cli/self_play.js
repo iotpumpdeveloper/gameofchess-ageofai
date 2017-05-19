@@ -41,14 +41,10 @@ for (n = 1; n <= 100; n++) {
     var fen = game.fen();
     var fenKey = querystring.escape(fen);
     var fenKeyEntry = experienceDBDir + '/' + fenKey;
-    var move = SimpleChessAI.getNextBestMove(fen);
+    var move = SimpleChessAI.getNextBestMove(fen, 4);
     move.fromSquare = SQUARES_MAP[move.from];
     move.toSquare = SQUARES_MAP[move.to];
-    if (fs.existsSync(fenKeyEntry)) {
-      console.log("fen entry exists in experience db");
-    } else {
-      fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
-    }
+    fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
     game.ugly_move(move);
     console.log(i+1);
     console.log(move);

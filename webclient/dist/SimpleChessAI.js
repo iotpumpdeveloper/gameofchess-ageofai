@@ -42,13 +42,6 @@ var getAIColor = function() {
 
 var minimaxRoot =function(depth, game, isMaximisingPlayer) {
 
-  var minimaxFunctionMap = {
-    3 : minimax3,
-    2 : minimax2,
-    1 : minimax1,
-    0 : minimax0
-  }
-
   var newGameMoves = game.ugly_moves();
   var bestMove = -9999;
   var bestMoveFound;
@@ -56,7 +49,7 @@ var minimaxRoot =function(depth, game, isMaximisingPlayer) {
   for(var i = 0; i < newGameMoves.length; i++) {
     var newGameMove = newGameMoves[i]
     game.ugly_move(newGameMove);
-    var value = minimaxFunctionMap[depth - 1](game, -10000, 10000, !isMaximisingPlayer);
+    var value = minimaxFunctionMap[depth - 1](depth - 1, game, -10000, 10000, !isMaximisingPlayer);
     game.undo();
     if(value >= bestMove) {
       bestMove = value;
@@ -66,14 +59,14 @@ var minimaxRoot =function(depth, game, isMaximisingPlayer) {
   return bestMoveFound;
 };
 
-var minimax3 = function (game, alpha, beta, isMaximisingPlayer) {
+var minimaxN = function (depth, game, alpha, beta, isMaximisingPlayer) {
   var newGameMoves = game.ugly_moves();
 
   if (isMaximisingPlayer) {
     var bestMove = -9999;
     for (var i = 0; i < newGameMoves.length; i++) {
       game.ugly_move(newGameMoves[i]);
-      bestMove = Math.max(bestMove, minimax2(game, alpha, beta, !isMaximisingPlayer));
+      bestMove = Math.max(bestMove, minimaxFunctionMap[depth - 1](depth - 1, game, alpha, beta, !isMaximisingPlayer));
       game.undo();
       alpha = Math.max(alpha, bestMove);
       if (beta <= alpha) {
@@ -85,7 +78,7 @@ var minimax3 = function (game, alpha, beta, isMaximisingPlayer) {
     var bestMove = 9999;
     for (var i = 0; i < newGameMoves.length; i++) {
       game.ugly_move(newGameMoves[i]);
-      bestMove = Math.min(bestMove, minimax2(game, alpha, beta, !isMaximisingPlayer));
+      bestMove = Math.min(bestMove, minimaxFunctionMap[depth - 1](depth - 1, game, alpha, beta, !isMaximisingPlayer));
       game.undo();
       beta = Math.min(beta, bestMove);
       if (beta <= alpha) {
@@ -96,71 +89,17 @@ var minimax3 = function (game, alpha, beta, isMaximisingPlayer) {
   }
 };
 
-var minimax2 = function (game, alpha, beta, isMaximisingPlayer) {
-  var newGameMoves = game.ugly_moves();
-
-  if (isMaximisingPlayer) {
-    var bestMove = -9999;
-    for (var i = 0; i < newGameMoves.length; i++) {
-      game.ugly_move(newGameMoves[i]);
-      bestMove = Math.max(bestMove, minimax1(game, alpha, beta, !isMaximisingPlayer));
-      game.undo();
-      alpha = Math.max(alpha, bestMove);
-      if (beta <= alpha) {
-        return bestMove;
-      }
-    }
-    return bestMove;
-  } else {
-    var bestMove = 9999;
-    for (var i = 0; i < newGameMoves.length; i++) {
-      game.ugly_move(newGameMoves[i]);
-      bestMove = Math.min(bestMove, minimax1(game, alpha, beta, !isMaximisingPlayer));
-      game.undo();
-      beta = Math.min(beta, bestMove);
-      if (beta <= alpha) {
-        return bestMove;
-      }
-    }
-    return bestMove;
-  }
-};
-
-
-var minimax1 = function (game, alpha, beta, isMaximisingPlayer) {
-  var newGameMoves = game.ugly_moves();
-
-  if (isMaximisingPlayer) {
-    var bestMove = -9999;
-    for (var i = 0; i < newGameMoves.length; i++) {
-      game.ugly_move(newGameMoves[i]);
-      bestMove = Math.max(bestMove, minimax0(game, alpha, beta, !isMaximisingPlayer));
-      game.undo();
-      alpha = Math.max(alpha, bestMove);
-      if (beta <= alpha) {
-        return bestMove;
-      }
-    }
-    return bestMove;
-  } else {
-    var bestMove = 9999;
-    for (var i = 0; i < newGameMoves.length; i++) {
-      game.ugly_move(newGameMoves[i]);
-      bestMove = Math.min(bestMove, minimax0(game, alpha, beta, !isMaximisingPlayer));
-      game.undo();
-      beta = Math.min(beta, bestMove);
-      if (beta <= alpha) {
-        return bestMove;
-      }
-    }
-    return bestMove;
-  }
-};
-
-
-var minimax0 = function (game, alpha, beta, isMaximisingPlayer) {
+var minimax0 = function (depth, game, alpha, beta, isMaximisingPlayer) {
   return -evaluateBoard(game.board());
 };
+
+//now initialize stack of minimax functions 
+var minimaxFunctionMap = [];
+
+minimaxFunctionMap[0] = minimax0;
+for (var d = 1; d <= 10; d ++) {
+  minimaxFunctionMap[d] = minimaxN;
+}
 
 var evaluateBoard = function (board) {
   var totalEvaluation = 0;
@@ -278,10 +217,13 @@ var getPieceValue = function (piece, x, y) {
   return piece.color === aiColor ? -absoluteValue : absoluteValue;
 };
 
-var getNextBestMove = function(fen) {
+var getNextBestMove = function(fen, depth) {
+  if (depth == undefined) {
+    depth = 3;
+  }
   game.load(fen);
   setAIColor(game.turn());
-  return minimaxRoot(3, game, true);
+  return minimaxRoot(depth, game, true);
 }
 
 module.exports = {
