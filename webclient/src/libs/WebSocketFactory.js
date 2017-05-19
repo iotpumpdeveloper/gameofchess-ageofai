@@ -51,6 +51,7 @@ export default class WebSocketFactory
             }
             this._wsMap[path]._ws.onerror = _errorHandler;
             if (this._wsMap[path]._ws.readyState == 1) {
+              console.log('websocket connection is good, sending message through web socket');
               this._wsMap[path]._ws.send(this._wsMap[path]._message);
             }
           }
