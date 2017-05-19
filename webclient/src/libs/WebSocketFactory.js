@@ -23,7 +23,10 @@ export default class WebSocketFactory
             //see if there is a pending message to send 
             if (this._wsMap[path]._message !== undefined) {
               console.log('about to send pending message');
-              this._wsMap[path]._ws.send(this._wsMap[path]._message);
+              //copy-delete-send
+              var message = this._wsMap[path]._message.slice(0); //copy string
+              delete this._wsMap[path]._message;
+              this._wsMap[path]._ws.send(message);
             }
           }
 
@@ -39,7 +42,10 @@ export default class WebSocketFactory
             ) { //the connection is closed, 
               this._wsMap[path]._ws = new WebSocket(wsUrl);
               this._wsMap[path]._ws.onopen = () => {
-                this._wsMap[path]._ws.send(this._wsMap[path]._message);
+                //copy-delete-send
+                var message = this._wsMap[path]._message.slice(0); //copy string
+                delete this._wsMap[path]._message;
+                this._wsMap[path]._ws.send(message);
               }
             }
             this._wsMap[path]._ws.onmessage = (event) => {
@@ -52,7 +58,10 @@ export default class WebSocketFactory
             this._wsMap[path]._ws.onerror = _errorHandler;
             if (this._wsMap[path]._ws.readyState == 1) {
               console.log('websocket connection is good, sending message through web socket');
-              this._wsMap[path]._ws.send(this._wsMap[path]._message);
+              //copy-delete-send
+              var message = this._wsMap[path]._message.slice(0); //copy string
+              delete this._wsMap[path]._message;
+              this._wsMap[path]._ws.send(message);
             }
           }
 
