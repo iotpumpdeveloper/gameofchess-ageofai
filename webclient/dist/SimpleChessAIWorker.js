@@ -17,5 +17,9 @@ require('./SimpleChessAI.js');
 self.addEventListener('message', (e) => {
   var fen = e.data;
   var move = self.getNextBestMove(fen);
-  self.postMessage( JSON.stringify(move) );
+  //send back the fen=>move pair 
+  self.postMessage( JSON.stringify({
+    fen : fen,
+    move : move
+  }) );
 }, false);

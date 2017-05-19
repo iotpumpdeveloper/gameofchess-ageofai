@@ -98,10 +98,9 @@ export default class
       this.chessAIWorker = new Worker('/dist/SimpleChessAIWorker.js');
       this.chessAIWorker.addEventListener('message', (e) => {
         try {
-          var move = JSON.parse(e.data);
+          var data = JSON.parse(e.data);
           console.log("got a move from in-browser ai worker");
-          console.log(move);
-          this.game.ugly_move(move);  
+          this.game.ugly_move(data.move);  
           var result = {
             fen : this.game.fen(),
             pgn : this.game.pgn(),
@@ -113,8 +112,8 @@ export default class
 
           //let ai server record {fen, move} pair so that it actually "learn"
           this.$aiws.aimoverecord.send({
-            fen : fen, //tricky, when saving fen, we should save the "old" fen!!!
-            move : move
+            fen : data.fen, //tricky, when saving fen, we should save the "old" fen!!!
+            move : data.move
           }, (response) => {
             if (response.data && response.data.success === true) {
               console.log('ai just learned a move for this situation');
