@@ -134,13 +134,10 @@ export default class
       fen : this.game.fen()
     }, (response) => {
       var _result = response.data;
-      console.log('ai server result:');
-      console.log(_result);
       if (_result.success) {
         try {
           var move = JSON.parse(_result.moveJSON);
           console.log('got move from ai server');
-          console.log(move);
           this.game.ugly_move(move);
           var result = {
             fen : this.game.fen(),
@@ -155,10 +152,11 @@ export default class
           this._doInBrowserAIMove(this.game.fen(), resultHandler)
         }
       } else { //no valid move from ai server, fall back to in-browser ai 
-        console.log('fall back to in-browser ai move');
+        console.log('no move from ai server, fall back to in-browser ai move');
         this._doInBrowserAIMove(this.game.fen(), resultHandler)
       }
     }, (error) => { //on error, we fall back to in-browser ai
+      console.log('error while getting move from ai server');
       console.log(error);
       this._doInBrowserAIMove(this.game.fen(), resultHandler)
     }); 
