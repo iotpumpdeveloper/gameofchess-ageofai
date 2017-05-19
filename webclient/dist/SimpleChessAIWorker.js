@@ -3,8 +3,8 @@
  */
 
 var scriptMap = {
-  './chess.js' : './chess.min.js',
-  './SimpleChessAI.js' : './SimpleChessAI.min.js',
+  './chess.js' : './chess.js',
+  './SimpleChessAI.js' : './SimpleChessAI.js',
 }
 
 const require = (scriptName) => {

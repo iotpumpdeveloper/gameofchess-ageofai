@@ -16,12 +16,10 @@ export default class
 
     this.$aiws = {};
     this.$aiws.aimoveget = this.$wsFactory.get('/ws/ai/move/get', {
-      keep_alive : false,
       immediate_reconnect_on_close : true 
     });
 
     this.$aiws.aimoverecord = this.$wsFactory.get('/ws/ai/move/record', {
-      keep_alive : false,
       immediate_reconnect_on_close : true 
     });
 
@@ -115,7 +113,7 @@ export default class
 
           //let ai server record {fen, move} pair so that it actually "learn"
           this.$aiws.aimoverecord.send({
-            fen : fen,
+            fen : fen, //tricky, when saving fen, we should save the "old" fen!!!
             move : move
           }, (response) => {
             if (response.data && response.data.success === true) {
@@ -123,17 +121,9 @@ export default class
             }
           }); 
         } catch (err) {
-	  console.log('invalid move from in-browser ai worker');
-	  console.log(move);
-          var result = {
-            fen : this.game.fen(),
-            pgn : this.game.pgn(),
-            moves : this.game.moves(),
-            turn : this.game.turn(),
-            in_check : this.game.in_check(),
-          };
-          resultHandler(result);
-          this.chessAIWorker.postMessage(this.game.fen());
+          console.log('invalid move from in-browser ai worker');
+          console.log(err);
+          this.chessAIWorker.postMessage(this.game.fen()); //try asking the ai worker for a move one more time
         }
       }, false);
     }
@@ -141,11 +131,12 @@ export default class
   }
 
   static doAIMove(resultHandler) {
-    var fen = this.game.fen();
     this.$aiws.aimoveget.send({
-      fen : fen 
+      fen : this.game.fen()
     }, (response) => {
       var _result = response.data;
+      console.log('ai server result:');
+      console.log(_result);
       if (_result.success) {
         try {
           var move = JSON.parse(_result.moveJSON);
@@ -162,15 +153,15 @@ export default class
           resultHandler(result);
         } catch (err) { //anything bad happens here we still fallback to in-browser ai move 
           console.log('invalid move generated from ai server, falling back to in-browser ai move');
-          this._doInBrowserAIMove(fen, resultHandler)
+          this._doInBrowserAIMove(this.game.fen(), resultHandler)
         }
       } else { //no valid move from ai server, fall back to in-browser ai 
         console.log('fall back to in-browser ai move');
-        this._doInBrowserAIMove(fen, resultHandler)
+        this._doInBrowserAIMove(this.game.fen(), resultHandler)
       }
     }, (error) => { //on error, we fall back to in-browser ai
-      console.log(error.message);
-      this._doInBrowserAIMove(fen, resultHandler)
+      console.log(error);
+      this._doInBrowserAIMove(this.game.fen(), resultHandler)
     }); 
 
   }
