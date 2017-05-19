@@ -25,7 +25,7 @@ export default class WebSocketFactoryPlugin
           this._wsMap[path]._ws = new WebSocket(wsUrl);
           this._wsMap[path]._ws.onopen = () => {
             //see if there is a pending message to send 
-            if (this._wsMap[path]._message != undefined) {
+            if (this._wsMap[path]._message !== undefined) {
               this._wsMap[path]._ws.send(this._wsMap[path]._message);
             }
           }
@@ -46,7 +46,7 @@ export default class WebSocketFactoryPlugin
               }
             }
             this._wsMap[path]._ws.onmessage = (event) => {
-              if (event.data  !=undefined) {
+              if (event.data !== undefined) {
                 var response = {};
                 response.data = JSON.parse(event.data);
                 _messageHandler(response);
