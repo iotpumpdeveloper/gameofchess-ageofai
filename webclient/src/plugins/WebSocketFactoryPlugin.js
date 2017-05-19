@@ -26,6 +26,7 @@ export default class WebSocketFactoryPlugin
           this._wsMap[path]._ws.onopen = () => {
             //see if there is a pending message to send 
             if (this._wsMap[path]._message !== undefined) {
+              console.log('about to send pending message');
               this._wsMap[path]._ws.send(this._wsMap[path]._message);
             }
           }

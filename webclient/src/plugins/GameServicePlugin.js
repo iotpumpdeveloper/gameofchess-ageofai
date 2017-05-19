@@ -120,9 +120,9 @@ export default class
             }
           }); 
         } catch (err) {
+          //this should be really weird, we will just log the error
           console.log('invalid move from in-browser ai worker');
           console.log(err);
-          this.chessAIWorker.postMessage(this.game.fen()); //try asking the ai worker for a move one more time
         }
       }, false);
     }
