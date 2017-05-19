@@ -1,5 +1,17 @@
 export default class WebSocketFactory
 {
+
+  static _doMessageSending(wsObj)
+  {
+    if (wsObj._message !== undefined) {
+      console.log('about to send message');
+      //copy-delete-send
+      var message = wsObj._message.slice(0); //copy string
+      delete wsObj._message;
+      wsObj._ws.send(message);
+    }
+  }
+
   /**
    * open a websocket connection to path, and try it keep it alive
    */
@@ -21,13 +33,7 @@ export default class WebSocketFactory
           this._wsMap[path]._ws = new WebSocket(wsUrl);
           this._wsMap[path]._ws.onopen = () => {
             //see if there is a pending message to send 
-            if (this._wsMap[path]._message !== undefined) {
-              console.log('about to send pending message');
-              //copy-delete-send
-              var message = this._wsMap[path]._message.slice(0); //copy string
-              delete this._wsMap[path]._message;
-              this._wsMap[path]._ws.send(message);
-            }
+            this._doMessageSending(this._wsMap[path]);
           }
 
           this._wsMap[path].send = (obj, _messageHandler, _errorHandler) => {
@@ -42,10 +48,7 @@ export default class WebSocketFactory
             ) { //the connection is closed, 
               this._wsMap[path]._ws = new WebSocket(wsUrl);
               this._wsMap[path]._ws.onopen = () => {
-                //copy-delete-send
-                var message = this._wsMap[path]._message.slice(0); //copy string
-                delete this._wsMap[path]._message;
-                this._wsMap[path]._ws.send(message);
+                this._doMessageSending(this._wsMap[path]);
               }
             }
             this._wsMap[path]._ws.onmessage = (event) => {
@@ -58,10 +61,7 @@ export default class WebSocketFactory
             this._wsMap[path]._ws.onerror = _errorHandler;
             if (this._wsMap[path]._ws.readyState == 1) {
               console.log('websocket connection is good, sending message through web socket');
-              //copy-delete-send
-              var message = this._wsMap[path]._message.slice(0); //copy string
-              delete this._wsMap[path]._message;
-              this._wsMap[path]._ws.send(message);
+              this._doMessageSending(this._wsMap[path]);
             }
           }
 
