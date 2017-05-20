@@ -45,7 +45,9 @@ export default class WebSocketFactory
             if (
               this._wsMap[path].options['immediate_reconnect_on_close'] 
               && this._wsMap[path]._ws.readyState == 3
-            ) { //the connection is closed, 
+            ) { //the connection is closed,
+              //clear the pending message 
+              delete this._wsMap[path]._message;
               this._wsMap[path]._ws = new WebSocket(wsUrl);
               this._wsMap[path]._ws.onopen = () => {
                 this._doMessageSending(this._wsMap[path]);
