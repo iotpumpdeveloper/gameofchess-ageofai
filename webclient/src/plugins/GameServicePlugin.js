@@ -150,6 +150,7 @@ export default class
           resultHandler(result);
         } catch (err) { //anything bad happens here we still fallback to in-browser ai move 
           console.log('invalid move generated from ai server, falling back to in-browser ai move');
+          //now fen string is polluted, we should recover the game by loading the original pgn
           this.game.load_pgn(orginalPGN); //recover the game by loading the original pgn
           this._doInBrowserAIMove(this.game.fen(), resultHandler)
         }
