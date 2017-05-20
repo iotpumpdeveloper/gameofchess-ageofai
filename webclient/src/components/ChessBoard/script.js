@@ -62,7 +62,7 @@ export default {
         var audio = new Audio('/audios/horse.ogg');
         audio.play();
         updateStatus(_result);
-        board.position(_result.fen);
+        board.position(_result.fen, false);
       });
     };
 
@@ -84,7 +84,7 @@ export default {
     // update the board position after the piece snap
     // for castling, en passant, pawn promotion
     var onSnapEnd = () => {
-      board.position(gameStatus.fen);
+      board.position(gameStatus.fen, false);
     };
 
     var waitForChessBoard = () => {
@@ -119,7 +119,7 @@ export default {
 
     this.$eventbus.$on('load_saved_game', (result) => {
       gameStatus = result;
-      board.position(result.fen);
+      board.position(result.fen, false);
       board.orientation(result.player_color);
     });
 
