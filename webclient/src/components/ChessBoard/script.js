@@ -1,4 +1,4 @@
-import ChessBoard from 'chessboardjs';
+import ChessBoard from '../../libs/chessboard.js';
 
 export default {
   data () {
