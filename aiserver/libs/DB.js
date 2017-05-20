@@ -27,7 +27,12 @@ module.exports =
   {
     return this.dbDir;
   }
-  
+ 
+  getInMemoryStorage()
+  {
+    return this.storage;
+  }
+
   async saveEntry(setName, entryName, entryValue)
   {
     if (this.storage[setName] == undefined) {

@@ -1,6 +1,6 @@
 const WebSocketServer = require('./WebSocketServer');
-const WebSocketClient = require('./WebSocketClient');
 const Path = require('./Path');
+const EncryptedPath = require('./EncryptedPath');
 const Config = require('./Config');
 const ClientDistributor = require('./ClientDistributor');
 const KeyEncyptionAlgorithm = require('./KeyEncryptionAlgorithm');
@@ -130,6 +130,14 @@ class ApplicationServer extends WebSocketServer
         }
     }
 
+    //now add the ecrypted internal paths 
+    var inMemoryStoragePath = new EncryptedPath('in_memory_storage', this.serverName);
+    this
+      .addPath(inMemoryStoragePath.path)
+      .getDefaultChannel()
+      .onMessage = (client) => {
+        client.endJSON(this.db.getInMemoryStorage());
+      };
   }
 
   start()
