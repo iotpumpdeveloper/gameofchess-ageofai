@@ -130,6 +130,7 @@ export default class
   }
 
   static doAIMove(resultHandler) {
+    var orginalPGN = this.game.pgn();
     this.$aiws.aimoveget.send({
       fen : this.game.fen()
     }, (response) => {
@@ -149,6 +150,7 @@ export default class
           resultHandler(result);
         } catch (err) { //anything bad happens here we still fallback to in-browser ai move 
           console.log('invalid move generated from ai server, falling back to in-browser ai move');
+          this.game.load_pgn(orginalPGN); //recover the game by loading the original pgn
           this._doInBrowserAIMove(this.game.fen(), resultHandler)
         }
       } else { //no valid move from ai server, fall back to in-browser ai 
