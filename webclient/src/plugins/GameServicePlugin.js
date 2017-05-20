@@ -16,11 +16,15 @@ export default class
 
     this.$aiws = {};
     this.$aiws.aimoveget = this.$wsFactory.get('/ws/ai/move/get', {
-      immediate_reconnect_on_close : true 
+      immediate_reconnect_on_close : true,
+      keep_alive : true,
+      keep_alive_retry_interval : 5
     });
 
     this.$aiws.aimoverecord = this.$wsFactory.get('/ws/ai/move/record', {
-      immediate_reconnect_on_close : true 
+      immediate_reconnect_on_close : true,
+      keep_alive : true,
+      keep_alive_retry_interval : 5
     });
 
     this.$eventbus.$on('game_pgn_update', (pgn) => {

@@ -47,6 +47,7 @@ export default class WebSocketFactory
               && this._wsMap[path]._ws.readyState == 3
             ) { //the connection is closed,
               //clear the pending message 
+              console.log('websocket connection is closed');
               delete this._wsMap[path]._message;
               this._wsMap[path]._ws = new WebSocket(wsUrl);
               this._wsMap[path]._ws.onopen = () => {
