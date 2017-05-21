@@ -5,5 +5,8 @@ module.exports =
  async (context) => {
     var db = context.db;
     var storage = db.getInMemoryStorage();
-    return storage;
+    return {
+      success : true,
+      storage : storage
+    };
   }
