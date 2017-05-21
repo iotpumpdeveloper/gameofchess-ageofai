@@ -20,6 +20,23 @@ class ApplicationServer extends WebSocketServer
     this.rootDir = __dirname + '/..';
   }
 
+  _sendResponseBackToClientOnRoute(route, client, response)
+  {
+    //if response is not an object, still default to success false
+    if (typeof response !== 'object') {
+      response = {
+        success : false
+      }
+    }
+
+    if (route.keep_open  === false) {
+      client.endJSON(response);
+    } else {
+      client.sendJSON(response); //we just send the json response and do not close the websocket
+    }
+  }
+
+
   /**
    * things that need to be hot reload goes here
    */
@@ -28,10 +45,10 @@ class ApplicationServer extends WebSocketServer
     this.config = Config.get();
     this.config.currentServerName = this.serverName; //very important, we use this to identify the current server's name
     this.distributor = new ClientDistributor(); //very important, we need to hot reload the client distributor
-   
+
     //now we need to hot reload all the routes 
     //map application routes
-    
+
     //first of all, clear all the existing paths 
     this.clearAllPaths();
     var routes = this.config.routes;
@@ -97,23 +114,7 @@ class ApplicationServer extends WebSocketServer
                 context.client = client;
 
                 context.response = await handler(context); //wait for the response
-
-                if (context.response !== undefined) {
-                  if (routes[client.path.path].keep_open  === false) {
-                    client.endJSON(context.response);
-                  } else {
-                    client.sendJSON(context.response); //we just send the json response and do not close the websocket
-                  }
-                } else { //if context has no response, we still default it to success false 
-                  context.resonse = {
-                    success : false
-                  }
-                  if (routes[client.path.path].keep_open  === false) {
-                    client.endJSON(context.response);
-                  } else {
-                    client.sendJSON(context.response); //we just send the json response and do not close the websocket
-                  }
-                }
+                this._sendResponseBackToClientOnRoute(routes[client.path.path], client, context.response);
               })
               .distribute(client, distribution_key);
           } catch (err) {
@@ -121,11 +122,7 @@ class ApplicationServer extends WebSocketServer
             context.resonse = {
               success : false
             }
-            if (routes[client.path.path].keep_open  === false) {
-              client.endJSON(context.response);
-            } else {
-              client.sendJSON(context.response); //we just send the json response and do not close the websocket
-            }
+            this._sendResponseBackToClientOnRoute(routes[client.path.path], client, context.response);
           }
         }
     }
@@ -158,29 +155,16 @@ class ApplicationServer extends WebSocketServer
             var handler = require(context.rootDir + '/internal_handlers/' + internal_paths[client.path.path].handler);
             try {
               context.response = await handler(context); //wait for the response
+              //internal path is a special route
+              this._sendResponseBackToClientOnRoute(internal_paths[client.path.path], client, context.response);
             } catch (err) {
               console.log(err);
               context.resonse = {
                 success : false
               }
+              this._sendResponseBackToClientOnRoute(internal_paths[client.path.path], client, context.response);
             }
 
-            if (context.response !== undefined) {
-              if (internal_paths[client.path.path].keep_open  === false) {
-                client.endJSON(context.response);
-              } else {
-                client.sendJSON(context.response); //we just send the json response and do not close the websocket
-              }
-            } else { //if context has no response, we still default it to success false 
-              context.resonse = {
-                success : false
-              }
-              if (internal_paths[client.path.path].keep_open  === false) {
-                client.endJSON(context.response);
-              } else {
-                client.sendJSON(context.response); //we just send the json response and do not close the websocket
-              }
-            }
           })(context)
         }
     }
