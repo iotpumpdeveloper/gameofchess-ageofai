@@ -130,14 +130,50 @@ class ApplicationServer extends WebSocketServer
         }
     }
 
-    //now add the ecrypted internal paths 
-    var inMemoryStoragePath = new EncryptedPath('in_memory_storage', this.serverName);
-    this
-      .addPath(inMemoryStoragePath.path)
-      .getDefaultChannel()
-      .onMessage = (client) => {
-        client.endJSON(this.db.getInMemoryStorage());
-      };
+    //now handle the encypted internal paths 
+    var internal_paths = this.config.internal_paths;
+    for (var path in this.config.internal_paths) {
+      var encryptedPath = new EncryptedPath(path, this.serverName);
+      internal_paths[encryptedPath.path] = this.config.internal_paths[path];
+    }
+
+    for (var encryptedPathName in internal_paths) {
+      this
+        .addPath(encryptedPathName)
+        .getDefaultChannel()
+        .onMessage = (client) => {
+          var context = {};
+          context.config = this.config;
+          context.rootDir = this.rootDir;
+          context.serverName = this.serverName;
+          context.db = this.db;
+          context.client = client;
+
+          if ( internal_paths[client.path.path].keep_open == undefined ) {
+            internal_paths[client.path.path].keep_open = false; //default behavior is websocket will be closed immediately
+          }
+
+          var handler = require(context.rootDir + '/internal_handlers/' + internal_paths[client.path.path].handler);
+          context.response = handler(context); //wait for the response
+
+          if (context.response !== undefined) {
+            if (internal_paths[client.path.path].keep_open  === false) {
+              client.endJSON(context.response);
+            } else {
+              client.sendJSON(context.response); //we just send the json response and do not close the websocket
+            }
+          } else { //if context has no response, we still default it to success false 
+            context.resonse = {
+              success : false
+            }
+            if (internal_paths[client.path.path].keep_open  === false) {
+              client.endJSON(context.response);
+            } else {
+              client.sendJSON(context.response); //we just send the json response and do not close the websocket
+            }
+          }
+        }
+    }
   }
 
   start()

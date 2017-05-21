@@ -26,5 +26,11 @@
             "distribution_key_algorithm" : "querystring_escape",
             "keep_open" : true 
         }
+    },
+    "internal_paths" : {
+        "in_memory_storage" : {
+            "handler" : "in_memory_storage.js",
+            "keep_open" : true
+        }
     }
 }

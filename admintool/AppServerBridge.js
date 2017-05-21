@@ -23,6 +23,7 @@ path = new EncryptedPath(path, serverName).path;
     _ws.on('open', () => {
       _ws.send('hello', (err) => {
         if (err) { //message is not sent
+          console.log(err);
           reject(err); 
         }
       });
