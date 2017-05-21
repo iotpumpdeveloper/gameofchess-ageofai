@@ -131,7 +131,7 @@ class ApplicationServer extends WebSocketServer
     }
 
     //now handle the encypted internal paths 
-    var internal_paths = this.config.internal_paths;
+    var internal_paths = {};
     for (var path in this.config.internal_paths) {
       var encryptedPath = new EncryptedPath(path, this.serverName);
       internal_paths[encryptedPath.path] = this.config.internal_paths[path];
