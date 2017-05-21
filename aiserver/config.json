@@ -30,7 +30,7 @@
     "internal_paths" : {
         "in_memory_storage" : {
             "handler" : "in_memory_storage.js",
-            "keep_open" : true
+            "keep_open" : false 
         }
     }
 }
