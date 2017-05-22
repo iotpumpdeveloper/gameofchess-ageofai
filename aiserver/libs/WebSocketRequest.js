@@ -21,20 +21,39 @@ module.exports =
     }
 
     return new Promise( (resolve, reject) => {
-      var _ws = new WebSocketClient(this.config.servers[this.serverName], this.path).connect();
-      _ws.on('open', () => {
-        _ws.send(message, (err) => {
-          if (err) { //message is not sent
-            console.log(err);
-            reject(err); 
-          }
-        });
-      });
-      _ws.on('message', (msg) => {
-        resolve(msg); 
-        //now close the websocket 
-        _ws.close();
-      });
+
+      this.initWS = () => {
+        {
+          this._ws = new WebSocketClient(this.config.servers[this.serverName], this.path).connect();
+          this._ws.on('open', () => {
+            this.messageSendingTickFunction();
+          });
+
+          this._ws.on('message', (msg) => {
+            resolve(msg); 
+            //now close the websocket 
+            //this._ws.close();
+          });
+        }
+      }
+
+      this.messageSendingTickFunction = () => {
+        //console.log(this._ws.readyState);
+        if (this._ws.readyState == 1) {
+          this._ws.send(message, (err) => {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+          });
+        } else if (this._ws.readyState == 3) {
+          this.initWS(); //websocket is closed, reconnect
+        }
+      }
+
+      this.initWS();
+      this.messageSendingTickFunction();
+
     });
   }
 }
