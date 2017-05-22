@@ -27,12 +27,13 @@ module.exports =
           this._ws = new WebSocketClient(this.config.servers[this.serverName], this.path).connect();
 
           this._ws.on('message', (msg) => {
+            clearInterval(this._interval)
             resolve(msg); 
             //now close the websocket 
-            this._ws.close();
+            //this._ws.close();
           });
 
-          this._interval = () => {
+          this._tick = () => {
             if (this._ws.readyState === 1) {
               this._ws.send(message, (err) => {
                 if (err) {
@@ -42,10 +43,12 @@ module.exports =
               });
             } else if (this._ws.readyState === 0) { //still connecting, keep waiting
               setTimeout(this._interval, 0);
-            } 
+            } else if (this._ws.readyState === 3) { //now websocket is closed, immediately connect it 
+              //this.initWS();
+            }
           }
 
-          this._interval();
+          this._tick();
         }
       }
 
