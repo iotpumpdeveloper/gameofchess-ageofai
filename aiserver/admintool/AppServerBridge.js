@@ -12,7 +12,6 @@ Config.init('../config.json');
 var serverName = args[2].trim();
 var path = args[3].trim();
 var message = require('query-string').parse(args[4].trim());
-console.log(message);
 
 const EncryptedPath = require('../libs/EncryptedPath');
 const WebSocketRequest = require('../libs/WebSocketRequest');
