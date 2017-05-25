@@ -19,8 +19,8 @@ const WebSocketRequest = require('../libs/WebSocketRequest');
 path = new EncryptedPath(path, serverName).path;
 
 (async () => {
-  var request = new WebSocketRequest(serverName, path);
   try {
+    var request = new WebSocketRequest(serverName, path);
     var response = await request.send(message);
     console.log(response); 
   } catch(err) {

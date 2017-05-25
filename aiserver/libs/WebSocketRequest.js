@@ -26,6 +26,10 @@ module.exports =
         {
           this._ws = new WebSocketClient(this.config.servers[this.serverName], this.path).connect();
 
+          this._ws.on('error', (error) => {
+            console.log(error.message);
+          });
+
           this._ws.on('message', (msg) => {
             resolve(msg); 
             //now close the websocket 
