@@ -71,7 +71,7 @@ var ai = new StockFishChessAI();
     game.ugly_move(move);
 
     //ai move 
-    var move = await ai.getNextBestMove(3);
+    var move = await ai.getNextBestMove(10);
     game.move(move);
   }
 })();
