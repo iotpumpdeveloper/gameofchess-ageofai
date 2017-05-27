@@ -57,7 +57,8 @@ class StockFishChessAI
           var move = {
             from: match[1], 
             to: match[2], 
-            promotion: match[3]
+            promotion: match[3],
+            engine:'stockfish'
           }
           resolve(move);
         }

@@ -122,7 +122,7 @@ export default class
             if (response.data && response.data.success === true) {
               console.log('ai just learned a move for this situation');
             }
-          }); 
+          });
         } catch (err) {
           //this should be really weird, we will just log the error
           console.log('invalid move from in-browser ai worker');
@@ -143,7 +143,11 @@ export default class
         try {
           var move = JSON.parse(_result.moveJSON);
           console.log('got move from ai server');
-          this.game.ugly_move(move);
+          if (move.engine !== undefined) { //this is from an ai engine, for example, stockfish
+            this.game.move(move);
+          } else { // this is from normal simple ai in browser
+            this.game.ugly_move(move);
+          }
           var result = {
             fen : this.game.fen(),
             pgn : this.game.pgn(),
