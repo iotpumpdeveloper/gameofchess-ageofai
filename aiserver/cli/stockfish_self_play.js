@@ -54,7 +54,7 @@ class StockFishChessAI
   }
 }
 
-//play 100 games
+//play 3000 games
 (async () => {
   for (n = 1; n <= 3000; n++) {
     console.log("Game Play " + n);
