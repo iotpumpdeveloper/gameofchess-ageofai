@@ -56,7 +56,7 @@ class StockFishChessAI
 
 //play 100 games
 (async () => {
-  for (n = 1; n <= 100; n++) {
+  for (n = 1; n <= 3000; n++) {
     console.log("Game Play " + n);
     var ai = new StockFishChessAI();
     for (var i = 1; i <= 100; i++) {
