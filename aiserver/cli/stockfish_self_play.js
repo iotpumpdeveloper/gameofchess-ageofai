@@ -1,6 +1,10 @@
 var StockFish = require('stockfish');
 var Chess = require(__dirname + '/../libs/chess.js').Chess;
 
+var querystring = require("querystring");
+var fs = require('fs');
+var experienceDBDir = __dirname + '/../../experience';
+
 class StockFishChessAI
 {
   constructor()
@@ -50,28 +54,39 @@ class StockFishChessAI
   }
 }
 
-var ai = new StockFishChessAI();
+//play 100 games
 (async () => {
-  for (var i = 1; i <= 100; i++) {
-    console.log(i);
-    var game = ai.getCurrentGame();
+  for (n = 1; n <= 100; n++) {
+    console.log("Game Play " + n);
+    var ai = new StockFishChessAI();
+    for (var i = 1; i <= 100; i++) {
+      console.log(i);
+      var game = ai.getCurrentGame();
 
-    if (game.moves().length == 0) {
-      console.log('Game over');
-      console.log(game.turn() + ' lost');
-      break;
-    } else if (game.in_stalemate() ) {
-      console.log('Stale Mate');
-      break;
+      if (game.moves().length == 0) {
+        console.log('Game over');
+        console.log(game.turn() + ' lost');
+        break;
+      } else if (game.in_stalemate() ) {
+        console.log('Stale Mate');
+        break;
+      }
+
+      //player move first, in white
+      var moves = game.ugly_moves(); 
+      var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
+      game.ugly_move(move);
+
+      var fen = game.fen();
+      var fenKey = querystring.escape(fen);
+      var fenKeyEntry = experienceDBDir + '/' + fenKey;
+
+      //ai move 
+      var move = await ai.getNextBestMove(10);
+      fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
+      game.move(move);
+
+
     }
-
-    //player move first, in white
-    var moves = game.ugly_moves(); 
-    var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
-    game.ugly_move(move);
-
-    //ai move 
-    var move = await ai.getNextBestMove(10);
-    game.move(move);
   }
 })();
