@@ -3,7 +3,12 @@ var Chess = require(__dirname + '/../libs/chess.js').Chess;
 
 var querystring = require("querystring");
 var fs = require('fs');
-var experienceDBDir = __dirname + '/../../experience';
+
+var KeyDistributor = require(__dirname + '/../libs/KeyDistributor.js');
+var Config = require(__dirname + '/../libs/Config.js');
+Config.init(__dirname + '/' + '../../aiserver/config.json');
+
+var kd = new KeyDistributor();
 
 var SQUARES = {
   a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
@@ -71,6 +76,15 @@ class StockFishChessAI
   }
 }
 
+function broadcastExperience(fen, move)
+{
+  var fenKey = querystring.escape(fen);
+  var serverName = kd.getServerNameForKey(fenKey);
+  var targetFile = __dirname + '/' + '../../db/' + serverName + '/experience/' + fenKey;
+  fs.writeFileSync(targetFile, JSON.stringify(move));
+}
+
+
 //cover all possible first movies
 (async () => {
   var ai = new StockFishChessAI();
@@ -94,17 +108,14 @@ class StockFishChessAI
     game = ai.getCurrentGame();
     game.ugly_move(firstMove); 
 
-    var fen = game.fen();
-    var fenKey = querystring.escape(fen);
-    var fenKeyEntry = experienceDBDir + '/' + fenKey;
-
     //ai move 
     var move = await ai.getNextBestMove(10);
     move.color = 'b';
     move.fromSquare = SQUARES_MAP[firstMove.from];
     firstMove.toSquare = SQUARES_MAP[firstMove.to];
 
-    fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
+    broadcastExperience(game.fen(), move);
+
     game.move(move);
 
     for (var i = 2; i <= 100; i++) {
@@ -125,14 +136,10 @@ class StockFishChessAI
       move.color = 'w';
       game.ugly_move(move);
 
-      var fen = game.fen();
-      var fenKey = querystring.escape(fen);
-      var fenKeyEntry = experienceDBDir + '/' + fenKey;
-
       //ai move 
       var move = await ai.getNextBestMove(10);
       move.color = 'b';
-      fs.writeFileSync(fenKeyEntry, JSON.stringify(move));
+      broadcastExperience(game.fen(), move); 
       game.move(move);
     }
   }
