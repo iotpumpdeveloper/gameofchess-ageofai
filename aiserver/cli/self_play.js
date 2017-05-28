@@ -50,7 +50,11 @@ function broadcastExperience(fen, move)
   //get all possible first moves for player 
   var game = ai.getCurrentGame();
 
-  var firstMoves = game.ugly_moves();  
+  var firstMoves = [];
+
+  for (k = 1; k <= 500; k++) {
+    firstMoves = firstMoves.concat(game.ugly_moves());
+  }
 
   var gameNumber = 0;
   for (fmi = 0; fmi < firstMoves.length; fmi ++) { //fmi --- first move index 
