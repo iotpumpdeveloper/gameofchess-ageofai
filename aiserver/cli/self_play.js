@@ -1,6 +1,5 @@
 require('events').EventEmitter.prototype._maxListeners = 1000;//set 1000 listeners
 
-const EventEmitter = require('events');
 const querystring = require("querystring");
 const fs = require('fs');
 const KeyDistributor = require(__dirname + '/../libs/KeyDistributor.js');
@@ -26,6 +25,16 @@ for( var key in SQUARES ) {
   SQUARES_MAP[SQUARES[key]] = key;
 }
 
+function doMove(game, move, color)
+{
+  move.color = color;
+  if (move.from >= 0 && move.from <= 119) {
+    game.ugly_move(move); 
+  } else {
+    game.move(move); 
+  }
+}
+
 function broadcastExperience(fen, move)
 {
   var fenKey = querystring.escape(fen);
@@ -40,56 +49,49 @@ function broadcastExperience(fen, move)
   var ai = new StockFishChessAI();
   //get all possible first moves for player 
   var game = ai.getCurrentGame();
+
   var firstMoves = game.ugly_moves();  
 
-  for (var gameNumber = 1; gameNumber <= 3000; gameNumber ++) {
-    console.log("Game Play " + gameNumber);
-    for (mi = 0; mi < firstMoves.length; mi ++) {
-      var ai = new StockFishChessAI();
-      var game = ai.getCurrentGame();
-      var firstMove = firstMoves[mi];
-      firstMove.color = 'w';
-      firstMove.fromSquare = SQUARES_MAP[firstMove.from];
-      firstMove.toSquare = SQUARES_MAP[firstMove.to];
-      console.log(1);
-      //player move first, in white 
-      game = ai.getCurrentGame();
-      game.ugly_move(firstMove); 
+  var gameNumber = 0;
+  for (fmi = 0; fmi < firstMoves.length; fmi ++) { //fmi --- first move index 
+    gameNumber ++;
+
+    console.log('Game ' + gameNumber);
+
+    console.log(1);
+    var ai = new StockFishChessAI();
+    var game = ai.getCurrentGame();
+    //player move, in white
+    var playerMove = firstMoves[fmi];
+    doMove(game, playerMove, 'w');
+    
+    //ai move, in black
+    var aiMove= await ai.getNextBestMove(10);
+    broadcastExperience(game.fen(), aiMove);
+    doMove(game, aiMove, 'b');
+    
+    for (var i = 2; i <= 100; i++) {
+      console.log(i);
+      if (game.moves().length == 0) {
+        console.log('Game over');
+        console.log(game.turn() + ' lost');
+        break;
+      } else if (game.in_stalemate() ) {
+        console.log('Stale Mate');
+        break;
+      }
+
+      //player move first, in white
+      var moves = game.ugly_moves(); 
+      var playerMove = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
+
+      doMove(game, playerMove, 'w');
 
       //ai move 
-      var move = await ai.getNextBestMove(10);
-      move.color = 'b';
-      move.fromSquare = SQUARES_MAP[firstMove.from];
-      firstMove.toSquare = SQUARES_MAP[firstMove.to];
+      var aiMove = await ai.getNextBestMove(10);
+      broadcastExperience(game.fen(), aiMove); 
+      doMove(game, aiMove, 'b');
 
-      broadcastExperience(game.fen(), move);
-
-      game.move(move);
-
-      for (var i = 2; i <= 100; i++) {
-        console.log(i);
-
-        if (game.moves().length == 0) {
-          console.log('Game over');
-          console.log(game.turn() + ' lost');
-          break;
-        } else if (game.in_stalemate() ) {
-          console.log('Stale Mate');
-          break;
-        }
-
-        //player move first, in white
-        var moves = game.ugly_moves(); 
-        var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
-        move.color = 'w';
-        game.ugly_move(move);
-
-        //ai move 
-        var move = await ai.getNextBestMove(10);
-        move.color = 'b';
-        broadcastExperience(game.fen(), move); 
-        game.move(move);
-      }
     }
   }
 })();
