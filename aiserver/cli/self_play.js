@@ -1,13 +1,13 @@
-var StockFish = require('stockfish');
-var Chess = require(__dirname + '/../libs/chess.js').Chess;
+require('events').EventEmitter.prototype._maxListeners = 1000;//set 1000 listeners
 
-var querystring = require("querystring");
-var fs = require('fs');
+const EventEmitter = require('events');
+const querystring = require("querystring");
+const fs = require('fs');
+const KeyDistributor = require(__dirname + '/../libs/KeyDistributor.js');
+const Config = require(__dirname + '/../libs/Config.js');
+const StockFishChessAI = require(__dirname + '/../libs/StockFishChessAI.js');
 
-var KeyDistributor = require(__dirname + '/../libs/KeyDistributor.js');
-var Config = require(__dirname + '/../libs/Config.js');
 Config.init(__dirname + '/' + '../../aiserver/config.json');
-
 var kd = new KeyDistributor();
 
 var SQUARES = {
@@ -26,56 +26,6 @@ for( var key in SQUARES ) {
   SQUARES_MAP[SQUARES[key]] = key;
 }
 
-class StockFishChessAI
-{
-  constructor()
-  {
-    this.game = new Chess();
-    this.stockfish = new StockFish();
-  }
-
-  getCurrentGame()
-  {
-    return this.game;
-  }
-
-  _getHistoricalMoves()
-  {
-    var moves = '';
-    var history = this.game.history({verbose: true});
-
-    for(var i = 0; i < history.length; ++i) {
-      var move = history[i];
-      moves += ' ' + move.from + move.to + (move.promotion ? move.promotion : '');
-    }
-
-    return moves;
-  }
-
-  getNextBestMove(depth)
-  {
-    return new Promise( (resolve, reject) => {
-      this.stockfish.onmessage = function(event) {
-        var data = event.data ? event.data : event;
-        var match = data.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/); //find the best move 
-        if (match !== null && typeof match === 'object') {
-          var move = {
-            from: match[1], 
-            to: match[2], 
-            promotion: match[3],
-            engine:'stockfish'
-          }
-          resolve(move);
-        }
-      };
-
-      //console.log(this._getHistoricalMoves());
-      this.stockfish.postMessage('position startpos moves' + this._getHistoricalMoves());
-      this.stockfish.postMessage("go depth " + depth);
-    });
-  }
-}
-
 function broadcastExperience(fen, move)
 {
   var fenKey = querystring.escape(fen);
@@ -92,55 +42,54 @@ function broadcastExperience(fen, move)
   var game = ai.getCurrentGame();
   var firstMoves = game.ugly_moves();  
 
-  var gameNumber = 0;
-
-  for (mi = 0; mi < firstMoves.length; mi ++) {
-    gameNumber ++;
-    var ai = new StockFishChessAI();
-    var game = ai.getCurrentGame();
-    var firstMove = firstMoves[mi];
-    firstMove.color = 'w';
-    firstMove.fromSquare = SQUARES_MAP[firstMove.from];
-    firstMove.toSquare = SQUARES_MAP[firstMove.to];
+  for (var gameNumber = 1; gameNumber <= 3000; gameNumber ++) {
     console.log("Game Play " + gameNumber);
-    console.log(1);
-    //player move first, in white 
-    game = ai.getCurrentGame();
-    game.ugly_move(firstMove); 
-
-    //ai move 
-    var move = await ai.getNextBestMove(10);
-    move.color = 'b';
-    move.fromSquare = SQUARES_MAP[firstMove.from];
-    firstMove.toSquare = SQUARES_MAP[firstMove.to];
-
-    broadcastExperience(game.fen(), move);
-
-    game.move(move);
-
-    for (var i = 2; i <= 100; i++) {
-      console.log(i);
-
-      if (game.moves().length == 0) {
-        console.log('Game over');
-        console.log(game.turn() + ' lost');
-        break;
-      } else if (game.in_stalemate() ) {
-        console.log('Stale Mate');
-        break;
-      }
-
-      //player move first, in white
-      var moves = game.ugly_moves(); 
-      var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
-      move.color = 'w';
-      game.ugly_move(move);
+    for (mi = 0; mi < firstMoves.length; mi ++) {
+      var ai = new StockFishChessAI();
+      var game = ai.getCurrentGame();
+      var firstMove = firstMoves[mi];
+      firstMove.color = 'w';
+      firstMove.fromSquare = SQUARES_MAP[firstMove.from];
+      firstMove.toSquare = SQUARES_MAP[firstMove.to];
+      console.log(1);
+      //player move first, in white 
+      game = ai.getCurrentGame();
+      game.ugly_move(firstMove); 
 
       //ai move 
       var move = await ai.getNextBestMove(10);
       move.color = 'b';
-      broadcastExperience(game.fen(), move); 
+      move.fromSquare = SQUARES_MAP[firstMove.from];
+      firstMove.toSquare = SQUARES_MAP[firstMove.to];
+
+      broadcastExperience(game.fen(), move);
+
       game.move(move);
+
+      for (var i = 2; i <= 100; i++) {
+        console.log(i);
+
+        if (game.moves().length == 0) {
+          console.log('Game over');
+          console.log(game.turn() + ' lost');
+          break;
+        } else if (game.in_stalemate() ) {
+          console.log('Stale Mate');
+          break;
+        }
+
+        //player move first, in white
+        var moves = game.ugly_moves(); 
+        var move = moves[Math.floor(Math.random() * moves.length)]; //player just do a random move
+        move.color = 'w';
+        game.ugly_move(move);
+
+        //ai move 
+        var move = await ai.getNextBestMove(10);
+        move.color = 'b';
+        broadcastExperience(game.fen(), move); 
+        game.move(move);
+      }
     }
   }
 })();
