@@ -115,6 +115,7 @@ export default class
           resultHandler(result);
 
           //let ai server record {fen, move} pair so that it actually "learn"
+          /*
           this.$aiws.aimoverecord.send({
             fen : data.fen, //tricky, when saving fen, we should save the "old" fen!!!
             move : data.move
@@ -123,6 +124,7 @@ export default class
               console.log('ai just learned a move for this situation');
             }
           });
+          */
         } catch (err) {
           //this should be really weird, we will just log the error
           console.log('invalid move from in-browser ai worker');

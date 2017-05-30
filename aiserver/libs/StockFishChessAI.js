@@ -8,6 +8,7 @@ class StockFishChessAI
   {
     this.game = new Chess();
     this.stockfish = new StockFish();
+    this.stockfish.onmessage = () => {}; //this is very interesting, we need to set an empty onmessage handler here
   }
 
   getCurrentGame()
