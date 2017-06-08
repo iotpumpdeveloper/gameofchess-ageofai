@@ -1,7 +1,8 @@
-export default {
+import ModalPlayerColorChooser from 'vue2-flexible-modal';
 
+export default {
   components : {
-    'modal-player-color-chooser' : require('vue2-flexible-modal')    
+    ModalPlayerColorChooser
   },
 
   data () {
