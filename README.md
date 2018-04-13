@@ -11,7 +11,7 @@ An AI based chess game built on top of Node.js and Vue.js
 
 
 ## Running the Game
-To run the game, you should first [Install Node.js 7.x](https://nodejs.org/en/)
+To run the game, you should first [Install Node.js 9.x](https://nodejs.org/en/)
 and also Nginx
 
 After that, just do:
