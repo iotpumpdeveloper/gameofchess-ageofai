@@ -6,7 +6,7 @@ const ClientDistributor = require('./ClientDistributor');
 const KeyEncyptionAlgorithm = require('./KeyEncryptionAlgorithm');
 const DB = require('./DB');
 
-module.exports = 
+module.exports =
 class ApplicationServer extends WebSocketServer
 {
   constructor(serverName)
@@ -36,6 +36,21 @@ class ApplicationServer extends WebSocketServer
     }
   }
 
+  async _handleContxt(internal_paths, context) {
+    var client = context.client;
+    var handler = require(context.rootDir + '/internal_handlers/' + internal_paths[client.path.path].handler);
+    try {
+      context.response = await handler(context); //wait for the response
+      //internal path is a special route
+      this._sendResponseBackToClientOnRoute(internal_paths[client.path.path], client, context.response);
+    } catch (err) {
+      console.log(err);
+      context.resonse = {
+        success : false
+      }
+      this._sendResponseBackToClientOnRoute(internal_paths[client.path.path], client, context.response);
+    }
+  }
 
   /**
    * things that need to be hot reload goes here
@@ -46,10 +61,10 @@ class ApplicationServer extends WebSocketServer
     this.config.currentServerName = this.serverName; //very important, we use this to identify the current server's name
     this.distributor = new ClientDistributor(); //very important, we need to hot reload the client distributor
 
-    //now we need to hot reload all the routes 
+    //now we need to hot reload all the routes
     //map application routes
 
-    //first of all, clear all the existing paths 
+    //first of all, clear all the existing paths
     this.clearAllPaths();
     var routes = this.config.routes;
     for (var path in this.config.routes) {
@@ -64,7 +79,7 @@ class ApplicationServer extends WebSocketServer
           context.serverName = this.serverName;
           context.db = this.db;
 
-          //now on the client's behavior on this route 
+          //now on the client's behavior on this route
 
           if ( routes[client.path.path].keep_open == undefined ) {
             routes[client.path.path].keep_open = false; //default behavior is websocket will be closed immediately
@@ -102,7 +117,7 @@ class ApplicationServer extends WebSocketServer
             }
 
             var distribution_key_algorithm = routes[client.path.path].distribution_key_algorithm;
-            var distribution_key = KeyEncyptionAlgorithm[distribution_key_algorithm](client.data[distribution_key_data_field]);            
+            var distribution_key = KeyEncyptionAlgorithm[distribution_key_algorithm](client.data[distribution_key_data_field]);
 
             context
               .distributor
@@ -127,7 +142,7 @@ class ApplicationServer extends WebSocketServer
         }
     }
 
-    //now handle the encypted internal paths 
+    //now handle the encypted internal paths
     var internal_paths = {};
     for (var path in this.config.internal_paths) {
       var encryptedPath = new EncryptedPath(path, this.serverName);
@@ -150,22 +165,7 @@ class ApplicationServer extends WebSocketServer
             internal_paths[client.path.path].keep_open = false; //default behavior is websocket will be closed immediately
           }
 
-          (async (context) => {
-            var client = context.client;
-            var handler = require(context.rootDir + '/internal_handlers/' + internal_paths[client.path.path].handler);
-            try {
-              context.response = await handler(context); //wait for the response
-              //internal path is a special route
-              this._sendResponseBackToClientOnRoute(internal_paths[client.path.path], client, context.response);
-            } catch (err) {
-              console.log(err);
-              context.resonse = {
-                success : false
-              }
-              this._sendResponseBackToClientOnRoute(internal_paths[client.path.path], client, context.response);
-            }
-
-          })(context)
+          this._handleContxt(internal_paths, context);
         }
     }
   }
