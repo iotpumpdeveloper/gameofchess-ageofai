@@ -48,7 +48,7 @@ module.exports =
   async getEntry(setName, entryName)
   {
     var result;
-    if (this.storage[setName] != undefined && this.storage[setName][entryName] != undefined ) {
+    if (this.storage[setName] !== undefined && this.storage[setName][entryName] !== undefined ) {
       console.log("reading entry " + entryName + " from memory");
       result = this.storage[setName][entryName];
     } else { //entry does not exist in memory, try reading it from disk
@@ -56,7 +56,7 @@ module.exports =
       if ( await fs.exists(entryPath) ) { //make sure the entry actually exists in disk
         var entryValue = await fs.readFile(entryPath);
         console.log("reading entry " + entryName + " from disk");
-        if (this.storage[setName] == undefined) {
+        if (this.storage[setName] === undefined) {
           this.storage[setName] = {};
         }
         this.storage[setName][entryName] = entryValue;
