@@ -32,7 +32,7 @@ class Channel
       var client = this.clients[clientId];
       if (
         client !== undefined
-        && client.readyState == client.OPEN  //this client is still open
+        && client.readyState === client.OPEN  //this client is still open
         && client.channel !== undefined
         && client.channel === this.name //this client is still under this channel
       ) {
