@@ -36,7 +36,7 @@ class ApplicationServer extends WebSocketServer
     }
   }
 
-  async _handleContxt(internal_paths, context) {
+  async _handleInternalPathContext(internal_paths, context) {
     var client = context.client;
     var handler = require(context.rootDir + '/internal_handlers/' + internal_paths[client.path.path].handler);
     try {
@@ -92,7 +92,7 @@ class ApplicationServer extends WebSocketServer
               throw new Error('Invalid incoming message, expect to be a string');
             }
 
-            if (client.message.trim().length == 0) {
+            if (client.message.trim().length === 0) {
               throw new Error('Invalid incoming message, expect to be JSON');
             }
 
@@ -165,7 +165,7 @@ class ApplicationServer extends WebSocketServer
             internal_paths[client.path.path].keep_open = false; //default behavior is websocket will be closed immediately
           }
 
-          this._handleContxt(internal_paths, context);
+          this._handleInternalPathContext(internal_paths, context);
         }
     }
   }
