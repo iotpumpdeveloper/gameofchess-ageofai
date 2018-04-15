@@ -6,7 +6,7 @@ const Config = require('./Config');
  * The client distributor
  * Responsible for distributing clients across different servers based on a given key
  */
-module.exports = 
+module.exports =
   class ClientDistributor
 {
 
@@ -26,13 +26,13 @@ module.exports =
 
   async distribute(client, key)
   {
-    if ( (typeof key != 'string') || ! (key.length > 0) ) { //we have an invalid key, just settle the distribution
-      this.onSettleCallback(); 
+    if ( (typeof key !== 'string') || ! (key.length > 0) ) { //we have an invalid key, just settle the distribution
+      this.onSettleCallback();
       return;
     }
     var config = Config.get();
     var serverName = this.KeyDistributor.getServerNameForKey(key);
-    if (serverName == config.currentServerName) { //this client is settled on the current server
+    if (serverName === config.currentServerName) { //this client is settled on the current server
       this.onSettleCallback();
     } else {
       var message = await this._forwardClientToServer(client, serverName);
@@ -50,13 +50,13 @@ module.exports =
       _ws.on('open', () => {
         _ws.send(client.message, (err) => {
           if (err) { //message is not sent
-            reject(err); 
+            reject(err);
           }
         });
       });
       _ws.on('message', (msg) => {
-        resolve(msg); 
-        //now close the websocket 
+        resolve(msg);
+        //now close the websocket
         _ws.close();
       });
     });
