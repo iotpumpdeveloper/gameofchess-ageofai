@@ -2,7 +2,7 @@ const Config = require('./Config');
 const CRC32 = require('crc-32');
 const md5 = require('md5');
 
-module.exports = 
+module.exports =
   class KeyDistributor
 {
   constructor()
@@ -10,7 +10,7 @@ module.exports =
     var config = Config.get();
     this.virtualServerNames = [];
     for (var serverName in config.servers) {
-      if (config.servers[serverName].weight == undefined) { //if weight is not defined, default to 1
+      if (config.servers[serverName].weight === undefined) { //if weight is not defined, default to 1
         config.servers[serverName].weight = 1;
       }
       for (var i = 1; i <= config.servers[serverName].weight; i++) {
