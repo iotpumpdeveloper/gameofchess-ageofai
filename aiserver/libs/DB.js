@@ -1,7 +1,7 @@
 const fs = require('./FileSystem');
 const Config = require('./Config');
 
-module.exports = 
+module.exports =
   class DB
 {
   constructor(serverName)
@@ -27,7 +27,7 @@ module.exports =
   {
     return this.dbDir;
   }
- 
+
   getInMemoryStorage()
   {
     return this.storage;
@@ -35,12 +35,12 @@ module.exports =
 
   async saveEntry(setName, entryName, entryValue)
   {
-    if (this.storage[setName] == undefined) {
+    if (this.storage[setName] === undefined) {
       this.storage[setName] = {};
     }
 
     var entryPath = this.dbDir + '/' + setName + '/' + entryName;
-    await fs.writeFile(entryPath, entryValue); //save entry to disk 
+    await fs.writeFile(entryPath, entryValue); //save entry to disk
     this.storage[setName][entryName] = entryValue;  //save entry to in-memory stroage
     console.log("successfully saved " + entryName + " on server " + this.serverName);
   }
@@ -61,7 +61,7 @@ module.exports =
         }
         this.storage[setName][entryName] = entryValue;
         result = entryValue;
-      } 
+      }
     }
     return result;
   }
