@@ -32,21 +32,21 @@ export default class WebSocketFactory
         if (this._wsMap[path]._ws == undefined || this._wsMap[path]._ws.readyState == 3) {
           this._wsMap[path]._ws = new WebSocket(wsUrl);
           this._wsMap[path]._ws.onopen = () => {
-            //see if there is a pending message to send 
+            //see if there is a pending message to send
             this._doMessageSending(this._wsMap[path]);
           }
 
           this._wsMap[path].send = (obj, _messageHandler, _errorHandler) => {
-            this._wsMap[path].sendMessage(JSON.stringify(obj), _messageHandler, _errorHandler); 
+            this._wsMap[path].sendMessage(JSON.stringify(obj), _messageHandler, _errorHandler);
           }
 
           this._wsMap[path].sendMessage = (message, _messageHandler, _errorHandler) => {
             this._wsMap[path]._message = message;
             if (
-              this._wsMap[path].options['immediate_reconnect_on_close'] 
+              this._wsMap[path].options['immediate_reconnect_on_close']
               && this._wsMap[path]._ws.readyState == 3
             ) { //the connection is closed,
-              //clear the pending message 
+              //clear the pending message
               console.log('websocket connection is closed');
               delete this._wsMap[path]._message;
               this._wsMap[path]._ws = new WebSocket(wsUrl);

@@ -9,14 +9,18 @@ import $ from 'jquery';
 
 window.$ = $;
 
-Vue.use(VueResource);
-Vue.use(WebSocketFactoryPlugin);
-Vue.use(EventBusPlugin); //this should load first
-Vue.use(GameServicePlugin);
+[
+  VueResource,
+  WebSocketFactoryPlugin,
+  EventBusPlugin, //this should load first
+  GameServicePlugin
+].forEach(plugin => {
+  Vue.use(plugin);
+});
 
 new Vue({
   el: '#app',
   render : h => {
     return h(App)
   }
-})
+});

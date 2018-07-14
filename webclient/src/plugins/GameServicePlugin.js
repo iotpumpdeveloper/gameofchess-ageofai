@@ -1,12 +1,12 @@
 /**
- * This is a centralize service component, depends on 
+ * This is a centralize service component, depends on
  * EventBusPlugin, WebSocketFactoryPlugin
  */
 import sha1 from 'sha1';
 import Storage from '../libs/Storage.js';
 import Chess from '../libs/chess.js';
 
-export default class 
+export default class
 {
   static install(Vue) {
     Vue.prototype.$gameservice = this;
@@ -89,7 +89,7 @@ export default class
     return result;
   }
 
-  static getSavedGames() 
+  static getSavedGames()
   {
     var savedGameData = Storage.getItem('saved_game_data');
     return savedGameData;
@@ -104,7 +104,7 @@ export default class
         try {
           var data = JSON.parse(e.data);
           console.log("got a move from in-browser ai worker");
-          this.game.ugly_move(data.move);  
+          this.game.ugly_move(data.move);
           var result = {
             fen : this.game.fen(),
             pgn : this.game.pgn(),
@@ -115,7 +115,6 @@ export default class
           resultHandler(result);
 
           //let ai server record {fen, move} pair so that it actually "learn"
-          /*
           this.$aiws.aimoverecord.send({
             fen : data.fen, //tricky, when saving fen, we should save the "old" fen!!!
             move : data.move
@@ -124,7 +123,6 @@ export default class
               console.log('ai just learned a move for this situation');
             }
           });
-          */
         } catch (err) {
           //this should be really weird, we will just log the error
           console.log('invalid move from in-browser ai worker');
@@ -158,13 +156,13 @@ export default class
             in_check : this.game.in_check(),
           };
           resultHandler(result);
-        } catch (err) { //anything bad happens here we still fallback to in-browser ai move 
+        } catch (err) { //anything bad happens here we still fallback to in-browser ai move
           console.log('invalid move generated from ai server, falling back to in-browser ai move');
           //now fen string is polluted, we should recover the game by loading the original pgn
           this.game.load_pgn(orginalPGN); //recover the game by loading the original pgn
           this._doInBrowserAIMove(this.game.fen(), resultHandler)
         }
-      } else { //no valid move from ai server, fall back to in-browser ai 
+      } else { //no valid move from ai server, fall back to in-browser ai
         console.log('no move from ai server, fall back to in-browser ai move');
         this._doInBrowserAIMove(this.game.fen(), resultHandler)
       }
@@ -172,7 +170,7 @@ export default class
       console.log('error while getting move from ai server');
       console.log(error);
       this._doInBrowserAIMove(this.game.fen(), resultHandler)
-    }); 
+    });
 
   }
 
